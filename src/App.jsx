@@ -22,8 +22,9 @@
 
 import { useState } from 'react';
 import './App.css';
-import HomePage from './components/Home';
+import HomePage from './components/Home'; // Assuming you have a Home component
 import Login from './components/Login';
+import Signup from './components/Signup';
 import StudentDashboard from './components/StudentDashboard';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -45,10 +46,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <div className="min-h-screen bg-gray-100">
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<HomePage />} /> {/* Home page route */}
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/signup" element={<Signup />} /> {/* Add the Signup route */}
           <Route path="/login/u" element={<StudentDashboard />} />
         </Routes>
       </BrowserRouter>
