@@ -50,8 +50,10 @@
 // }
 
 // export default StudentDashboard;
+
+
 import React from 'react';
-import JournalEntries from './JournalEntries';
+import JournalEntriesByDate from './JournalEntries'; // New Component for Date-based entries
 import AddEntryForm from './AddEntryForm';
 import GoalAnalyzer from './GoalAnalyzer';
 
@@ -64,7 +66,7 @@ const StudentDashboard = () => {
                     <AddEntryForm />
                 </div>
                 <div>
-                    <JournalEntries />
+                    <JournalEntriesByDate /> {/* New Date-based Entries Component */}
                 </div>
             </div>
 

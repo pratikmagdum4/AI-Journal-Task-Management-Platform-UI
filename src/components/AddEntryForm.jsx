@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const AddEntryForm = () => {
     const [entryContent, setEntryContent] = useState('');
-    const userId = 'your_user_id_here'; // You can retrieve this from authentication logic
+    const userId = '6710039be1ee72e4ab1e6965'; // You can retrieve this from authentication logic
 
     const handleAddEntry = async (e) => {
         e.preventDefault();
