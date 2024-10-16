@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-
+import { styles } from "./styles/inlinestyles";
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -16,7 +16,7 @@ const Signup = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => { // Use async/await for promises
     e.preventDefault();
     const { name, email, password } = formData;
 
@@ -25,16 +25,14 @@ const Signup = () => {
     } else {
       setError("");
 
-      // Save the details to local storage
-      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-      existingUsers.push(formData);
-      localStorage.setItem("users", JSON.stringify(existingUsers));
-
-      // Reset form
-      setFormData({ name: "", email: "", password: "" });
-
-      // Show success message
-      alert("Signup successful! Your details have been saved.");
+      try {
+        const response = await axios.post('/api/signup', formData); // Replace '/api/signup' with your actual endpoint
+        console.log(response.data); // Handle successful response from the server (optional)
+        // You can redirect to a different page or show a success message here
+      } catch (error) {
+        console.error(error); // Handle errors from the server
+        setError("Signup failed. Please try again.");
+      }
     }
   };
 
@@ -108,65 +106,6 @@ const Signup = () => {
   );
 };
 
-// Inline styling
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
-    fontFamily: "'Arial', sans-serif",
-  },
-  form: {
-    backgroundColor: "white",
-    padding: "2rem",
-    borderRadius: "10px",
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-    width: "100%",
-    maxWidth: "400px",
-    textAlign: "center",
-  },
-  title: {
-    marginBottom: "1.5rem",
-    fontSize: "2rem",
-    color: "#333",
-  },
-  inputGroup: {
-    marginBottom: "1rem",
-    textAlign: "left",
-  },
-  label: {
-    display: "block",
-    marginBottom: "0.5rem",
-    fontSize: "1rem",
-    color: "#555",
-  },
-  input: {
-    width: "100%",
-    padding: "0.75rem",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-    fontSize: "1rem",
-    transition: "all 0.2s ease-in-out",
-  },
-  button: {
-    width: "100%",
-    padding: "0.75rem",
-    backgroundColor: "#5c67f2",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    fontSize: "1.2rem",
-    cursor: "pointer",
-    marginTop: "1rem",
-    transition: "background-color 0.3s ease",
-  },
-  error: {
-    color: "red",
-    fontSize: "0.9rem",
-    marginTop: "0.5rem",
-  },
-};
+
 
 export default Signup;

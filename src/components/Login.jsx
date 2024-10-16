@@ -1,12 +1,27 @@
 import { useState } from 'react';
-
+import axios from 'axios';
 function Login({ onLogin }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onLogin(username, password);
+
+        // Prepare login data
+        const loginData = {
+            username,
+            password,
+        };
+
+        try {
+            const response = await axios.post('/api/login', loginData); // Replace '/api/login' with your actual endpoint
+            console.log(response.data); // Handle successful login response (optional)
+            // You can redirect to a different page or show a success message here
+            onLogin(true); // Call onLogin prop with success flag (optional)
+        } catch (error) {
+            console.error(error); // Handle errors from the server
+            // You can show an error message to the user here
+        }
     };
 
     return (
@@ -44,6 +59,7 @@ function Login({ onLogin }) {
 
                     <button
                         type="submit"
+                        onClick={handleSubmit}
                         className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-200"
                     >
                         Login
