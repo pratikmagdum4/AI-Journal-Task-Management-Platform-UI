@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const AddEntryForm = () => {
     const [entryContent, setEntryContent] = useState('');
+    const userId = 'your_user_id_here'; // You can retrieve this from authentication logic
 
-    const handleAddEntry = (e) => {
+    const handleAddEntry = async (e) => {
         e.preventDefault();
-        const currentEntries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+
         const newEntry = {
+            userId, // Make sure to pass the userId for the entry
             content: entryContent,
             date: new Date().toISOString().split('T')[0], // Store the entry with the current date
         };
-        localStorage.setItem('journalEntries', JSON.stringify([...currentEntries, newEntry]));
-        setEntryContent('');
-        alert('Journal entry added successfully!');
+
+        try {
+            // Ensure the API endpoint is correct (adjust host and port if needed)
+            const response = await axios.post('http://localhost:5000/api/journal/add-entry', newEntry);
+            console.log(response.data); // Handle successful response from the server
+            alert('Entry added successfully!'); // Optional success message
+            setEntryContent(''); // Clear the input field
+        } catch (error) {
+            console.error(error); // Handle errors from the server
+            alert('Error adding entry. Please try again.');
+        }
     };
 
     return (

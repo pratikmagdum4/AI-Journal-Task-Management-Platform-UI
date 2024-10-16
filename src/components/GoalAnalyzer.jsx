@@ -16,6 +16,8 @@ const GoalAnalyzer = () => {
             const goalKeywords = ['exercise', 'study', 'work', 'health', 'read', 'project'];
             const detectedGoals = [];
 
+
+            
             entries.forEach(entry => {
                 goalKeywords.forEach(keyword => {
                     if (entry.content.includes(keyword)) {
