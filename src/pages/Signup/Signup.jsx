@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; 
-import { styles } from "./styles/inlinestyles";
+import { styles } from "../../components/styles/inlinestyles";
 import axios from "axios";
+import Navbar from "../Navbar/Navbar";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -68,6 +69,10 @@ const Signup = () => {
     }
   };
   return (
+    <>
+    <Navbar/>
+    
+    
     <div style={styles.container}>
       <motion.div
         className="signup-form"
@@ -168,6 +173,7 @@ const Signup = () => {
         </form>
       </motion.div>
     </div>
+    </>
   );
 };
 

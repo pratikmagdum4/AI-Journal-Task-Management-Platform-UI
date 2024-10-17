@@ -22,10 +22,10 @@
 
 import { useState } from 'react';
 import './App.css';
-import HomePage from './components/Home'; // Assuming you have a Home component
-import Login from './components/Login';
-import Signup from './components/Signup';
-import StudentDashboard from './components/StudentDashboard';
+import HomePage from './pages/Home/Home'; // Assuming you have a Home component
+import Login from './pages/Login/Login';
+import Signup from './pages/Signup/Signup';
+import StudentDashboard from './pages/User/StudentDashboard';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {

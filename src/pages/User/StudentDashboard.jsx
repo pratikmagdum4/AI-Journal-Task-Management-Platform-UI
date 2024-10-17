@@ -52,13 +52,18 @@
 // export default StudentDashboard;
 
 
-import React from 'react';
-import JournalEntriesByDate from './JournalEntries'; // New Component for Date-based entries
-import AddEntryForm from './AddEntryForm';
-import GoalAnalyzer from './GoalAnalyzer';
+import React, { useState } from 'react';
+import JournalEntriesByDate from '../../components/JournalEntries'; // New Component for Date-based entries
+import AddEntryForm from '../../components/AddEntryForm';
+import GoalAnalyzer from '../../components/GoalAnalyzer';
+import AskQuestionForm from '../../components/AskQuestionForm';// Import the new Ask Question component
+import Navbar from '../Navbar/Navbar';
 
 const StudentDashboard = () => {
+    
     return (
+          <>
+            <Navbar />
         <div className="min-h-screen p-8 bg-gray-100">
             <h1 className="text-3xl font-bold mb-8">Student Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -73,7 +78,13 @@ const StudentDashboard = () => {
             <div className="mt-12">
                 <GoalAnalyzer />
             </div>
+
+            {/* New Ask Question Section */}
+            <div className="mt-12">
+                <AskQuestionForm />
+            </div>
         </div>
+           </>
     );
 };
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
 
 function Login({ onLogin }) {
     const [loginData, setLoginData] = useState({
@@ -44,6 +45,9 @@ function Login({ onLogin }) {
     };
 
     return (
+        <>
+        <Navbar/>
+       
         <div className="flex h-screen items-center justify-center">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
@@ -94,6 +98,7 @@ function Login({ onLogin }) {
                 </form>
             </div>
         </div>
+        </>
     );
 }
 

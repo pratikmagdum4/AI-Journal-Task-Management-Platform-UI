@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import Navbar from '../pages/Navbar/Navbar';
 
 const JournalEntriesByDate = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -24,6 +25,7 @@ const JournalEntriesByDate = () => {
                 params: { date: formattedDate, userId: '6710039be1ee72e4ab1e6965' },
             });
             console.log(response);
+            console.log("Response data is",response.data);
             setEntries(response.data);
         } catch (error) {
             console.error('Error fetching entries:', error);
@@ -40,6 +42,9 @@ const JournalEntriesByDate = () => {
     }, [selectedDate]);
 
     return (
+        <>
+       
+       
         <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">Select a Date to View Entries</h2>
             <DatePicker
@@ -66,6 +71,7 @@ const JournalEntriesByDate = () => {
                 </div>
             )}
         </div>
+        </>
     );
 };
 
