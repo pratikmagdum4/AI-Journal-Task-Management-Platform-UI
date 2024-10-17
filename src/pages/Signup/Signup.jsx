@@ -5,6 +5,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { styles } from "../../components/styles/inlinestyles";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
+import { BASE_URL } from "../../api";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const Signup = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/signup",
+          `${BASE_URL}/api/signup`,
           formData
         );
 

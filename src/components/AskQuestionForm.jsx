@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { BASE_URL } from '../api';
 const AskQuestionForm = () => {
     const [question, setQuestion] = useState('');
     const [entries, setEntries] = useState([]);
@@ -48,7 +48,7 @@ const AskQuestionForm = () => {
     useEffect(() => {
         const fetchEntries = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/journal/get-all-entries/${id}`); // Fetch all user entries
+                const response = await axios.get(`${BASE_URL}api/journal/get-all-entries/${id}`); // Fetch all user entries
                 console.log("The data i got is",response.data)
                 setEntries(response.data); // Store entries in the state
             } catch (error) {

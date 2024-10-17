@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { BASE_URL } from '../api';
 
 const AddEntryForm = () => {
     const [entryContent, setEntryContent] = useState('');
@@ -16,7 +17,7 @@ const AddEntryForm = () => {
 
         try {
             // Ensure the API endpoint is correct (adjust host and port if needed)
-            const response = await axios.post('http://localhost:5000/api/journal/add-entry', newEntry);
+            const response = await axios.post(`${BASE_URL}/api/journal/add-entry`, newEntry);
             console.log(response.data); // Handle successful response from the server
             alert('Entry added successfully!'); // Optional success message
             setEntryContent(''); // Clear the input field

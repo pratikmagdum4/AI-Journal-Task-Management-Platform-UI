@@ -3,6 +3,7 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Navbar from '../pages/Navbar/Navbar';
+import { BASE_URL } from '../api';
 
 const JournalEntriesByDate = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -21,7 +22,7 @@ const JournalEntriesByDate = () => {
             const formattedDate = `${year}-${month}-${day}`;
             setgotdate(formattedDate)
             console.log("The formatted date is", formattedDate);
-            const response = await axios.get(`http://localhost:5000/api/journal/get-entry`, {
+            const response = await axios.get(`${BASE_URL}/api/journal/get-entry`, {
                 params: { date: formattedDate, userId: '6710039be1ee72e4ab1e6965' },
             });
             console.log(response);

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
+import { BASE_URL } from '../../api';
 
 function Login({ onLogin }) {
     const [loginData, setLoginData] = useState({
@@ -22,7 +23,7 @@ function Login({ onLogin }) {
         // Use loginData for email and password
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/login',
+                `${BASE_URL}/api/login`,
                 loginData
             );
             console.log(response.data); // Handle successful login response
