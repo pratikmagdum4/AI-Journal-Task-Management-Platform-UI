@@ -1,4 +1,4 @@
-import Navbar from '../../pages/navbar/Navbar';
+import Navbar from '../../pages/Navbar/Navbar';
 import '../styles/loading.css';
 
 const Loading = ({ links, isHome }) => {
