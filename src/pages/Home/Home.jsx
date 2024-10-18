@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -15,29 +16,11 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 to-blue-500">
       {/* Navbar */}
-      <nav className="bg-white shadow-md p-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">AI Journal</h1>
-          <div>
-            <a href="#features" className="px-4 py-2 text-gray-700 hover:text-gray-900">Features</a>
-            <a href="#about" className="px-4 py-2 text-gray-700 hover:text-gray-900">About</a>
-            <a href="#contact" className="px-4 py-2 text-gray-700 hover:text-gray-900">Contact</a>
-            <button
-              onClick={handleLogin}
-              className="ml-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition duration-300"
-            >
-              Login
-            </button>
-            <button
-              onClick={handleSignup}
-              className="ml-4 px-4 py-2 bg-purple-600 text-white font-semibold rounded hover:bg-purple-700 transition duration-300"
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </nav>
+      <div className='pb-10'>
 
+      
+      <Navbar/>
+      </div>
       {/* Hero Section */}
       <section className="py-20 text-white text-center">
         <div className="container mx-auto">
@@ -46,7 +29,7 @@ function HomePage() {
             A digital tool combining traditional journaling with the power of artificial intelligence.
             Track your progress, set goals, and stay motivated with AI-driven insights.
           </p>
-          <a href="#get-started" className="bg-white text-blue-500 px-6 py-3 rounded font-semibold hover:bg-gray-200 transition duration-300">Get Started</a>
+          <Link to="/signup" className="bg-white text-blue-500 px-6 py-3 rounded font-semibold hover:bg-gray-200 transition duration-300">Get Started</Link>
         </div>
       </section>
 

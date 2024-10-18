@@ -53,38 +53,38 @@
 
 
 import React, { useState } from 'react';
-import JournalEntriesByDate from '../../components/JournalEntries'; // New Component for Date-based entries
-import AddEntryForm from '../../components/AddEntryForm';
-import GoalAnalyzer from '../../components/GoalAnalyzer';
-import AskQuestionForm from '../../components/AskQuestionForm';// Import the new Ask Question component
+import JournalEntriesByDate from '../../components/ui/JournalEntries'; // New Component for Date-based entries
+import AddEntryForm from '../../components/ui/AddEntryForm';
+import GoalAnalyzer from '../../components/ui/GoalAnalyzer';
+import AskQuestionForm from '../../components/ui/AskQuestionForm';// Import the new Ask Question component
 import Navbar from '../Navbar/Navbar';
 
 const StudentDashboard = () => {
-    
+
     return (
-          <>
+        <>
             <Navbar />
-        <div className="min-h-screen p-8 bg-gray-100">
-            <h1 className="text-3xl font-bold mb-8">Student Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <AddEntryForm />
+            <div className="min-h-screen p-8 bg-gray-100">
+                <h1 className="text-3xl font-bold mb-8">Student Dashboard</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <AddEntryForm />
+                    </div>
+                    <div>
+                        <JournalEntriesByDate /> {/* New Date-based Entries Component */}
+                    </div>
                 </div>
-                <div>
-                    <JournalEntriesByDate /> {/* New Date-based Entries Component */}
+
+                <div className="mt-12">
+                    <GoalAnalyzer />
+                </div>
+
+                {/* New Ask Question Section */}
+                <div className="mt-12">
+                    <AskQuestionForm />
                 </div>
             </div>
-
-            <div className="mt-12">
-                <GoalAnalyzer />
-            </div>
-
-            {/* New Ask Question Section */}
-            <div className="mt-12">
-                <AskQuestionForm />
-            </div>
-        </div>
-           </>
+        </>
     );
 };
 

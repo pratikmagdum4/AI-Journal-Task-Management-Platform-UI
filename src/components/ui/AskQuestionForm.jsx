@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BASE_URL } from '../api';
+import { BASE_URL } from '../../api';
+import { useSelector } from 'react-redux';
+import { selectCurrentUid } from '../../redux/authSlice';
 
 const AskQuestionForm = () => {
     const [question, setQuestion] = useState('');
     const [entries, setEntries] = useState([]);
     const [answer, setAnswer] = useState('');
     const [generatingAnswer, setGeneratingAnswer] = useState(false); // Use boolean for loading state
-    const id = "6710039be1ee72e4ab1e6965"; // Example user ID, adjust as necessary
-
+    const id = useSelector(selectCurrentUid)
     // Format journal entries for the API
     const formatEntriesForAPI = () => {
         return entries.map((entry, index) => {

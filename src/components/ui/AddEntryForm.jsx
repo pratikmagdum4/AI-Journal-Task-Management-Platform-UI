@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import axios from 'axios';
-import { BASE_URL } from '../api';
+import { BASE_URL } from '../../api';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentUid } from '../../redux/authSlice';
 
 const AddEntryForm = () => {
     const [entryContent, setEntryContent] = useState('');
-    const userId = '6710039be1ee72e4ab1e6965'; // You can retrieve this from authentication logic
-
+    // const userId = '6710039be1ee72e4ab1e6965'; // You can retrieve this from authentication logic
+    const dispatch = useDispatch();
+    const userId = useSelector(selectCurrentUid)
+    console.log("The id is ", userId)
     const handleAddEntry = async (e) => {
         e.preventDefault();
 

@@ -13,6 +13,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@google/generative-ai": "^0.21.0",
+    "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
     "bun": "^1.1.30",
     "caniuse-lite": "^1.0.30001668",
@@ -23,8 +24,10 @@
     "react-datepicker": "^7.4.0",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
+    "react-redux": "^9.1.2",
     "react-router-dom": "^6.27.0",
-    "react-toastify": "^10.0.6"
+    "react-toastify": "^10.0.6",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

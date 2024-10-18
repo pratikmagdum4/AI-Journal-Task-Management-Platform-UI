@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -8,7 +8,9 @@ import Navbar from "../Navbar/Navbar";
 import { BASE_URL } from "../../api";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
-
+import { Navigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCurrentUid } from "../../redux/authSlice";
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -16,10 +18,16 @@ const Signup = () => {
     password: "",
     mobile: "", // Add mobilenumber field
   });
-
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+  const id = useSelector(selectCurrentUid)
+  useEffect(()=>{
+    if (id)
+    {
+      navigate("/login/u")
+    }
+  })
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -46,29 +54,10 @@ const Signup = () => {
         );
 
         console.log(response.data);
+        toast.success("Signup successful! Redirecting to login...");
 
-        if (response.data.success) {
-          const userData = {
-            id: response.data.user._id,
-            name: response.data.user.name,
-            role: response.data.user.role,
-            token: response.data.token,
-          };
-
-          localStorage.setItem('userData', JSON.stringify(userData));
-
-          // Show success toast
-          toast.success("Signup successful! Redirecting to profile...");
-
-          // Redirect to profile after a short delay
-          setTimeout(() => {
-            window.location.href = '/profile';
-          }, 2000);
-
-        } else {
-          setError(response.data.msg || "Signup failed. Please try again.");
-          toast.error(response.data.msg || "Signup failed. Please try again."); // Show error toast
-        }
+        navigate("/login")
+        
       } catch (error) {
         console.error("The error is", error.response?.data?.msg || error.message);
         setError(error.response?.data?.msg || "Signup failed. Please try again.");

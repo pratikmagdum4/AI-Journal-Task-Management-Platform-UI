@@ -1,34 +1,55 @@
 import { useRef } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-// import "../Styles/main.css";
-import "../../components/styles/navbar.css"
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { logOut } from "../../redux/authSlice"; // Import updated logOut action
+import { useNavigate } from 'react-router-dom'; // For navigation after logout
+import "../../components/styles/navbar.css";
+import { Link } from "react-router-dom"; // Import Link
+
 function Navbar() {
     const navRef = useRef();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
+    // Get authentication state from Redux
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+    // Toggle Navbar responsiveness
     const showNavbar = () => {
-        navRef.current.classList.toggle(
-            "responsive_nav"
-        );
+        navRef.current.classList.toggle("responsive_nav");
+    };
+
+    // Handle logout
+    const handleLogout = () => {
+        dispatch(logOut()); // Dispatch the logOut action from authSlice
+        navigate('/login'); // Redirect to login after logout
     };
 
     return (
         <header>
             <h3>LOGO</h3>
             <nav ref={navRef}>
-                <a href="/">Home</a>
-                <a href="/login">login</a>
-                <a href="/signup">SignUp</a>
-                <a href="/login/u">Dashboard</a>
-                <a href="/">About me</a>
-                <button
-                    className="nav-btn nav-close-btn"
-                    onClick={showNavbar}>
+                <Link to="/">Home</Link> {/* Replaced with Link */}
+                {/* Conditionally render based on authentication status */}
+                {!isAuthenticated ? (
+                    <>
+                        <Link to="/login">Login</Link> {/* Replaced with Link */}
+                        <Link to="/signup">SignUp</Link> {/* Replaced with Link */}
+                    </>
+                ) : (
+                    <>
+                        <Link to="/login/u">Dashboard</Link> {/* Replaced with Link */}
+                        <button className="logout-btn" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </>
+                )}
+                <Link to="/about">About me</Link> {/* Replaced with Link */}
+                <button className="nav-btn nav-close-btn" onClick={showNavbar}>
                     <FaTimes />
                 </button>
             </nav>
-            <button
-                className="nav-btn"
-                onClick={showNavbar}>
+            <button className="nav-btn" onClick={showNavbar}>
                 <FaBars />
             </button>
         </header>
