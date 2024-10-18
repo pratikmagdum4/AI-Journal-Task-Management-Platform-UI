@@ -12,9 +12,12 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@google/generative-ai": "^0.21.0",
     "axios": "^1.7.7",
+    "bun": "^1.1.30",
     "caniuse-lite": "^1.0.30001668",
     "framer-motion": "^11.11.9",
+    "ollama": "^0.5.9",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
     "react-datepicker": "^7.4.0",
