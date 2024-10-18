@@ -8,6 +8,7 @@ import { BASE_URL } from '../../api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { isAuthenticated,setUserInfo } from '../../redux/authSlice';
+import Loading from '../../components/ui/Loading';
 function Login() {
     const [loginData, setLoginData] = useState({
         email: "",
@@ -15,6 +16,7 @@ function Login() {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");  // New error state
+    const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -28,6 +30,7 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             // Make login request
             const response = await axios.post(`${BASE_URL}/api/login`, loginData);
@@ -61,7 +64,7 @@ function Login() {
             }
         } catch (error) {
             console.error("Login error: ", error);
-
+            setLoading(false);
             // Handle error and set error state for displaying on UI
             if (error.response && error.response.data && error.response.data.message) {
                 setError(error.response.data.message);
@@ -80,64 +83,72 @@ function Login() {
     return (
         <>
             <Navbar />
-            <div className="flex h-screen items-center justify-center">
-                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                        Login
-                    </h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2" htmlFor="email">
-                                Username (Email)
-                            </label>
-                            <input
-                                type="text"
-                                id="email"
-                                name="email"
-                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={loginData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="mb-6 relative">
-                            <label className="block text-gray-700 font-semibold mb-2" htmlFor="password">
-                                Password
-                            </label>
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                name="password"
-                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={loginData.password}
-                                onChange={handleChange}
-                                required
-                            />
-                            <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 px-4 py-2 text-gray-600"
-                                onClick={togglePasswordVisibility}
-                            >
-                                {showPassword ? "Hide" : "Show"}
-                            </button>
-                        </div>
-
-                        {/* Display the error message if it exists */}
-                        {error && (
-                            <p className="text-red-500 text-sm mb-4">{error}</p>
-                        )}
-
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-200"
-                        >
+            {loading ? (
+                <Loading />
+            ) : (
+                <div className="flex h-screen items-center justify-center">
+                    <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
                             Login
-                        </button>
-                    </form>
-                </div>
-            </div>
+                        </h2>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-4">
+                                <label
+                                    className="block text-gray-700 font-semibold mb-2"
+                                    htmlFor="email"
+                                >
+                                    Username (Email)
+                                </label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={loginData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-6 relative">
+                                <label
+                                    className="block text-gray-700 font-semibold mb-2"
+                                    htmlFor="password"
+                                >
+                                    Password
+                                </label>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    id="password"
+                                    name="password"
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={loginData.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 px-4 py-2 text-gray-600"
+                                    onClick={togglePasswordVisibility}
+                                >
+                                    {showPassword ? "Hide" : "Show"}
+                                </button>
+                            </div>
 
-            {/* Add ToastContainer to render the toast notifications */}
+                            {/* Display the error message if it exists */}
+                            {error && (
+                                <p className="text-red-500 text-sm mb-4">{error}</p>
+                            )}
+
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-200"
+                            >
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
             <ToastContainer />
         </>
     );
