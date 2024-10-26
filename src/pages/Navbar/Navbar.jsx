@@ -39,12 +39,13 @@ function Navbar() {
                 ) : (
                     <>
                         <Link to="/login/u">Dashboard</Link> {/* Replaced with Link */}
+                        <Link to="/login/t">Tasks</Link> {/* Replaced with Link */}
                         <button className="logout-btn" onClick={handleLogout}>
                             Logout
                         </button>
                     </>
                 )}
-                <Link to="/">About me</Link> {/* Replaced with Link */}
+                <Link to="/">About Us</Link> {/* Replaced with Link */}
                 <Link to="/c">Contact</Link> {/* Replaced with Link */}
                 <button className="nav-btn nav-close-btn" onClick={showNavbar}>
                     <FaTimes />
