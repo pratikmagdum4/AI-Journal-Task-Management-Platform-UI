@@ -71,7 +71,7 @@ const Signup = () => {
       <Navbar />
       <ToastContainer /> {/* Toast Container to show toast notifications */}
 
-      <div style={styles.container}>
+      <div style={styles.container} >
         <motion.div
           className="signup-form"
           style={styles.form}
@@ -81,7 +81,7 @@ const Signup = () => {
         >
           <h2 style={styles.title}>Create Your Account</h2>
 
-          <form onSubmit={handleSubmit} style={styles.formGroup}>
+          <form onSubmit={handleSubmit} style={styles.formGroup} >
             <div style={styles.inputGroup}>
               <label htmlFor="name" style={styles.label}>
                 Name

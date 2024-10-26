@@ -12,7 +12,7 @@ const Loading = ({ links, isHome }) => {
                         <span></span>
                     </div>
                 </>) :
-                (<><Navbar links={links} />
+                (<> 
                     <div className='loader'>
                         Loading
                         <span></span>

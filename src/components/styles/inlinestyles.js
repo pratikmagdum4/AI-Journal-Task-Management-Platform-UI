@@ -9,7 +9,7 @@ export const styles = {
   },
   form: {
     backgroundColor: "white",
-    padding: "2rem",
+    padding: "1.2rem",
     borderRadius: "10px",
     boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
     width: "100%",
