@@ -61,9 +61,12 @@ const TaskInputForm = () => {
     };
 
     const getTasks = async () => {
+        console.log("in")
+        
         try {
             const response = await axios.get(`${BASE_URL}/api/tasks/${id}`);
-            setTasks(response.data.tasks); // Set fetched tasks in the state
+            setTasks(response); // Set fetched tasks in the state
+            console.log("The tasks are",tasks)
         } catch (error) {
             console.error("Error fetching tasks:", error);
         }
