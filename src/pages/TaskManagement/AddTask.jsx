@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import Navbar from '../Navbar/Navbar';
 const TaskInputForm = () => {
     const [taskInput, setTaskInput] = useState('');
     const [parsedTask, setParsedTask] = useState('');
     const [parsedDeadline, setParsedDeadline] = useState('');
+    const [tasks, setTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const extractTaskDetails = async (e) => {
@@ -29,12 +30,19 @@ const TaskInputForm = () => {
             });
 
             const geminiResponse = response.data.candidates[0].content.parts[0].text;
-
-            // Here we assume the Gemini API response is structured so you can split or parse the response
-            // Example response processing based on structure you might receive:
             const parsedData = geminiResponse.split("Deadline:");
-            setParsedTask(parsedData[0].trim());
-            setParsedDeadline(parsedData[1] ? parsedData[1].trim() : "No specific deadline found");
+            const taskDescription = parsedData[0].trim();
+            const taskDeadline = parsedData[1] ? parsedData[1].trim() : "No specific deadline found";
+
+            setParsedTask(taskDescription);
+            setParsedDeadline(taskDeadline);
+
+            // Add task to server
+            await addTaskToServer({ taskDescription, taskDeadline });
+
+            // Add task to the list
+            setTasks((prevTasks) => [...prevTasks, { taskDescription, taskDeadline }]);
+            setTaskInput(''); // Clear the input after adding
 
         } catch (error) {
             console.error("Error:", error);
@@ -43,7 +51,19 @@ const TaskInputForm = () => {
         }
     };
 
+    // Function to send task to Node.js backend
+    const addTaskToServer = async (taskData) => {
+        try {
+            await axios.post("http://localhost:5000/api/tasks", taskData);
+        } catch (error) {
+            console.error("Error adding task to server:", error);
+        }
+    };
+
     return (
+        <>
+        <Navbar/>
+        
         <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4">Add a Task with Natural Language</h2>
             <form onSubmit={extractTaskDetails}>
@@ -71,7 +91,20 @@ const TaskInputForm = () => {
                     <p><strong>Deadline:</strong> {parsedDeadline}</p>
                 </div>
             )}
+
+            <div className="mt-6">
+                <h3 className="text-lg font-semibold">Task List:</h3>
+                <ul className="mt-4">
+                    {tasks.map((task, index) => (
+                        <li key={index} className="p-4 mb-2 bg-gray-100 rounded-lg">
+                            <p><strong>Task:</strong> {task.taskDescription}</p>
+                            <p><strong>Deadline:</strong> {task.taskDeadline}</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
+        </>
     );
 };
 

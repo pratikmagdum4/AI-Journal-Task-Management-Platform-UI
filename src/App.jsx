@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<HomePage />} /> {/* Home page route */}
           <Route path="/login" element={<Login />} /> {/* Login route */}
           <Route path="/signup" element={<Signup />} /> {/* Signup route */}
-          <Route path="/t" element={<TaskInputForm />} /> {/* Signup route */}
+          <Route path="/login/t" element={<TaskInputForm />} /> Signup route
           <Route path="/c" element={<ContactPage />} /> {/* Signup route */}
 
           {/* Private route for the Student Dashboard (protected and role-based) */}
