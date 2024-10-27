@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { isAuthenticated, setUserInfo } from '../../redux/authSlice';
 import Loading from '../../components/ui/Loading';
-
+import { eyehide } from '../../assets/exportImages';
 function Login() {
     const [loginData, setLoginData] = useState({
         email: "",
@@ -108,9 +108,13 @@ function Login() {
                                         onClick={togglePasswordVisibility}
                                     >
                                         {showPassword ? (
-                                            <span role="img" aria-label="Hide Password">👁️</span>
+                                                <span role="img" aria-label="Hide Password">
+                                                    <div className='h-5 w-5'>
+                                                        <img src={eyehide} alt="" />
+                                                    </div>
+                                                  </span>
                                         ) : (
-                                            <span role="img" aria-label="Show Password">👁️‍🗨️</span>
+                                                    <span role="img" aria-label="Show Password">👁️</span>
                                         )}
                                     </button>
                                 </div>
