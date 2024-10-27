@@ -15,6 +15,8 @@ const TaskInputForm = () => {
 
     useEffect(() => {
         getTasks(); // Fetch existing tasks when the component mounts
+        console.log("The tasks stored in effect ", tasks)
+
     }, []);
 
     const extractTaskDetails = async (e) => {
@@ -62,11 +64,12 @@ const TaskInputForm = () => {
 
     const getTasks = async () => {
         console.log("in")
-        
+
         try {
             const response = await axios.get(`${BASE_URL}/api/tasks/${id}`);
-            setTasks(response); // Set fetched tasks in the state
-            console.log("The tasks are",tasks)
+            setTasks(response.data); // Set fetched tasks in the state
+            console.log("The tasks are", response.data)
+            console.log("The tasks stored ", tasks)
         } catch (error) {
             console.error("Error fetching tasks:", error);
         }
@@ -127,10 +130,15 @@ const TaskInputForm = () => {
                         {tasks && tasks.length > 0 ? (
                             tasks.map((task, index) => (
                                 <li key={index} className="p-4 mb-2 bg-gray-100 rounded-lg">
-                                    <p><strong>Task:</strong> {task.taskDescription}</p>
-                                    {task.taskDeadline && (
-                                        <p><strong>Deadline:</strong> {task.taskDeadline}</p>
-                                    )}
+                                    <p><strong>Original Task:</strong> {task.originalTask
+                                    }</p>
+                                    <p><strong>Task:</strong> {task.extractedDescription
+                                    }</p>
+                                    {task.extractedTime
+                                        && (
+                                            <p><strong>Deadline:</strong> {task.extractedTime
+                                            }</p>
+                                        )}
                                 </li>
                             ))
                         ) : (
