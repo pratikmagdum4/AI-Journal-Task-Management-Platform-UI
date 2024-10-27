@@ -12,6 +12,7 @@ function Navbar() {
     const navigate = useNavigate();
 
     // Get authentication state from Redux
+    // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     // Toggle Navbar responsiveness
