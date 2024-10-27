@@ -8,6 +8,7 @@ import PrivateRoute from './components/services/PrivateRoute';
 import ErrorPage from './components/ui/Error';
 import TaskInputForm from './pages/TaskManagement/AddTask';
 import ContactPage from './pages/Contact/Contact';
+import Loader2 from './components/ui/Loading2';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/signup" element={<Signup />} /> {/* Signup route */}
           <Route path="/login/t" element={<TaskInputForm />} /> Signup route
           <Route path="/c" element={<ContactPage />} /> {/* Signup route */}
+          <Route path="/l" element={<Loader2 />} /> {/* Signup route */}
 
           {/* Private route for the Student Dashboard (protected and role-based) */}
           <Route
