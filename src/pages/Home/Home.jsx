@@ -1,26 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { startLoading, stopLoading, selectLoading } from '../../redux/slices/loadingSlice';
 import Navbar from '../Navbar/Navbar';
-import Loader from '../../components/ui/Loader'; // Import your Loader component
 
 function HomePage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const isLoading = useSelector(selectLoading);
-
-  // Simulate loading entries on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      dispatch(startLoading());
-      // Simulate an API call
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate a delay
-      dispatch(stopLoading());
-    };
-
-    fetchData();
-  }, [dispatch]);
 
   const handleLogin = () => {
     navigate('/login');
@@ -30,21 +13,13 @@ function HomePage() {
     navigate('/signup'); // Navigate to signup page
   };
 
-  // Simulate submission with a loader
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    dispatch(startLoading());
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate a delay
-    dispatch(stopLoading());
-    // After submission, you might want to navigate or do something else
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 to-blue-500">
       {/* Navbar */}
       <div className='pb-10'>
-        <Navbar />
+
+      
+      <Navbar/>
       </div>
       {/* Hero Section */}
       <section className="py-20 text-white text-center">
@@ -58,26 +33,34 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Loader Section */}
-      {isLoading && <Loader />}
-
       {/* Features Section */}
       <section id="features" className="py-16 bg-gray-100">
         <div className="container mx-auto text-center">
           <h3 className="text-3xl font-bold text-gray-800 mb-8">Key Features</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature Cards */}
             <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
               <h4 className="text-xl font-bold mb-4">Daily Journaling with AI Analysis</h4>
               <p>Track your thoughts and activities daily. Get AI-powered insights on your productivity and well-being.</p>
             </div>
             <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
-              <h4 className="text-xl font-bold mb-4">Goal Tracking & Recommendations</h4>
-              <p>Set and track your goals with AI assistance. Receive personalized recommendations to stay on track.</p>
+              <h4 className="text-xl font-bold mb-4">Multimedia Entries</h4>
+              <p>Enrich your journal with photos, voice notes, and videos to capture more context.</p>
             </div>
             <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
-              <h4 className="text-xl font-bold mb-4">Productivity Insights & Trends</h4>
-              <p>Analyze your productivity patterns over time. Get insights on trends to optimize your daily routines.</p>
+              <h4 className="text-xl font-bold mb-4">Goal Setting</h4>
+              <p>Set and track short-term and long-term goals. Stay motivated with progress updates.</p>
+            </div>
+            <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
+              <h4 className="text-xl font-bold mb-4">Ikigai Surveys</h4>
+              <p>Identify what brings meaning to your life through surveys that focus on personal satisfaction.</p>
+            </div>
+            <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
+              <h4 className="text-xl font-bold mb-4">AI-powered Analytics</h4>
+              <p>Analyze your text and multimedia entries to gain insights and generate personalized reports.</p>
+            </div>
+            <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
+              <h4 className="text-xl font-bold mb-4">Secure Data Storage</h4>
+              <p>Your data is protected with encryption and secure cloud storage for peace of mind.</p>
             </div>
           </div>
         </div>

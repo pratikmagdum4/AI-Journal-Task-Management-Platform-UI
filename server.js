@@ -1,6 +1,6 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
@@ -12,7 +12,7 @@ app.use(cors());
 // Route to handle signup form submission
 app.post('/signup', (req, res) => {
     const { username, email, password } = req.body;
-
+    
     // You can handle the data here (e.g., save it to a database)
     console.log('Signup Data:', { username, email, password });
 
