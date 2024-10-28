@@ -39,8 +39,13 @@ function Navbar() {
                         <button className="logout-btn" onClick={handleLogout}>Logout</button>
                     </>
                 )}
+<<<<<<< HEAD
                 <Link to="/about">About Us</Link> {/* Ensure this is correctly pointing to About Us */}
                 <Link to="/c">Contact</Link>
+=======
+                <Link to="/a">About Us</Link> {/* Replaced with Link */}
+                <Link to="/c">Contact</Link> {/* Replaced with Link */}
+>>>>>>> master
                 <button className="nav-btn nav-close-btn" onClick={showNavbar}>
                     <FaTimes />
                 </button>
