@@ -4,27 +4,29 @@ import { BASE_URL } from '../../api';
 import { useSelector } from 'react-redux';
 import { selectCurrentUid } from '../../redux/authSlice';
 
-const AskQuestionForm = () => {
-    const [question, setQuestion] = useState('');
+const GoalAnalyzer = () => {
+    const [goal, setGoal] = useState('');
     const [entries, setEntries] = useState([]);
-    const [answer, setAnswer] = useState('');
-    const [generatingAnswer, setGeneratingAnswer] = useState(false); // Use boolean for loading state
-    const id = useSelector(selectCurrentUid)
-    // Format journal entries for the API
+    const [analysis, setAnalysis] = useState('');
+    const [analyzingGoal, setAnalyzingGoal] = useState(false);
+    const id = useSelector(selectCurrentUid);
+
+    // Format entries for the API
     const formatEntriesForAPI = () => {
         return entries.map((entry, index) => {
             return `Entry ${index + 1}: ${entry.content} (Timestamp: ${new Date(entry.date).toLocaleString()})`;
         }).join("\n\n");
     };
 
-    // Function to generate answer
-    async function generateAnswer(e) {
+    // Function to analyze goal
+    async function analyzeGoal(e) {
         e.preventDefault();
-        // console.log("The entries are here: ", entries);
-        setGeneratingAnswer(true); // Set loading state
-        const formattedEntries = formatEntriesForAPI();
+        console.log("Entries for analysis: ", entries);
+        setAnalyzingGoal(true);
 
-        setAnswer("Loading your answer... It might take up to 10 seconds.");
+        const formattedEntries = formatEntriesForAPI();
+        setAnalysis("Analyzing your goal progress... This may take a few moments.");
+
         try {
             const response = await axios({
                 url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
@@ -34,7 +36,7 @@ const AskQuestionForm = () => {
                         {
                             parts: [
                                 {
-                                    text: `Following is my question, give me an answer based on the following entries with their timestamp:\n\n${question}\n\n${formattedEntries}`
+                                    text: `Analyze the following entries in relation to the goal: "${goal}". Provide insights on the user's progress in a short paragraph and provide few points to improve , give the response as like you are taking to a person and providing him this information in a conversation :\n\n${formattedEntries}`
                                 }
                             ]
                         }
@@ -42,58 +44,57 @@ const AskQuestionForm = () => {
                 }
             });
 
-            // Corrected response structure
-            setAnswer(response.data.candidates[0].content.parts[0].text);
+            setAnalysis(response.data.candidates[0].content.parts[0].text);
         } catch (error) {
             console.error("Error:", error);
-            setAnswer("Sorry - Something went wrong. Please try again!");
+            setAnalysis("Sorry - Something went wrong. Please try again.");
         }
 
-        setGeneratingAnswer(false); // End loading state
+        setAnalyzingGoal(false);
     }
 
     // Fetch all entries when the component loads
     useEffect(() => {
         const fetchEntries = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/journal/get-all-entries/${id}`); // Fetch all user entries
-                // console.log("The data I got is", response.data);
-                setEntries(response.data); // Store entries in the state
+                const response = await axios.get(`${BASE_URL}/api/journal/get-all-entries/${id}`);
+                console.log("Fetched entries:", response.data);
+                setEntries(response.data);
             } catch (error) {
                 console.error('Error fetching entries:', error);
             }
         };
         fetchEntries();
-    }, []);
+    }, [id]);
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Ask a Question Based on Your Entries</h2>
-            <form onSubmit={generateAnswer}>
+            <h2 className="text-xl font-bold mb-4">Analyze Your Goal Progress</h2>
+            <form onSubmit={analyzeGoal}>
                 <textarea
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Ask your question..."
+                    value={goal}
+                    onChange={(e) => setGoal(e.target.value)}
+                    placeholder="Enter your goal..."
                     className="w-full p-4 border border-gray-300 rounded-lg mb-4"
                     rows="3"
                     required
                 />
                 <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                    disabled={generatingAnswer} // Disable the button while loading
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    disabled={analyzingGoal}
                 >
-                    {generatingAnswer ? "Generating Answer..." : "Ask Question"}
+                    {analyzingGoal ? "Analyzing Goal..." : "Analyze Goal"}
                 </button>
             </form>
-            {answer && (
+            {analysis && (
                 <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-                    <h3 className="text-lg font-semibold">Answer:</h3>
-                    <p>{answer}</p>
+                    <h3 className="text-lg font-semibold">Goal Analysis:</h3>
+                    <p>{analysis}</p>
                 </div>
             )}
         </div>
     );
 };
 
-export default AskQuestionForm;
+export default GoalAnalyzer;

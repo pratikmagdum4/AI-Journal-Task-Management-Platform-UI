@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const GoalAnalyzer = () => {
+const GoalRecognizer = () => {
     const [recognizedGoals, setRecognizedGoals] = useState([]);
 
     useEffect(() => {
@@ -48,4 +48,4 @@ const GoalAnalyzer = () => {
     );
 };
 
-export default GoalAnalyzer;
+export default GoalRecognizer;
