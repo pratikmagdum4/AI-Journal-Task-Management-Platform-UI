@@ -119,14 +119,16 @@ export default authSlice.reducer;
 export { loadState };
 
 // Selectors
-export const selectCurrentUser = (state) => state.auth.currentUser;
-export const selectCurrentToken = (state) => state.auth.token;
-export const selectCurrentUid = (state) => state.auth.Uid;
-export const selectCurrentName = (state) => state.auth.Name;
-export const selectCurrentRole = (state) => state.auth.Role;
-export const selectCurrentDept = (state) => state.auth.Dept;
-export const selectAllUsers = (state) => state.auth.users;
-export const isAuthenticated = (state) => state.auth.isAuthenticated;
+// Selectors with optional chaining to avoid undefined errors
+export const selectCurrentUser = (state) => state.auth?.currentUser ?? null;
+export const selectCurrentToken = (state) => state.auth?.token ?? null;
+export const selectCurrentUid = (state) => state.auth?.Uid ?? null;
+export const selectCurrentName = (state) => state.auth?.Name ?? null;
+export const selectCurrentRole = (state) => state.auth?.Role ?? null;
+export const selectCurrentDept = (state) => state.auth?.Dept ?? null;
+export const selectAllUsers = (state) => state.auth?.users ?? [];
+export const isAuthenticated = (state) => state.auth?.isAuthenticated ?? false;
+
 
 // Action to set users manually
 export const setUsers = (users) => ({

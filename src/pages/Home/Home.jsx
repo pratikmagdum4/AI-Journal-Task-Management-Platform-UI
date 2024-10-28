@@ -71,7 +71,14 @@ function HomePage() {
               <h4 className="text-xl font-bold mb-4">Daily Journaling with AI Analysis</h4>
               <p>Track your thoughts and activities daily. Get AI-powered insights on your productivity and well-being.</p>
             </div>
-            {/* Add other feature cards here */}
+            <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
+              <h4 className="text-xl font-bold mb-4">Goal Tracking & Recommendations</h4>
+              <p>Set and track your goals with AI assistance. Receive personalized recommendations to stay on track.</p>
+            </div>
+            <div className="bg-white p-6 shadow-lg rounded-lg transition duration-300 hover:shadow-xl">
+              <h4 className="text-xl font-bold mb-4">Productivity Insights & Trends</h4>
+              <p>Analyze your productivity patterns over time. Get insights on trends to optimize your daily routines.</p>
+            </div>
           </div>
         </div>
       </section>

@@ -1,0 +1,11 @@
+.about-us {
+  background: linear-gradient(to bottom right, #6a0dad, #4b0082);
+}
+
+h1, h2, h3 {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+section {
+  margin: 20px 0;
+}
