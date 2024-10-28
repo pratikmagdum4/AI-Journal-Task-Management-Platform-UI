@@ -10,7 +10,6 @@ import ErrorPage from './components/ui/Error';
 import TaskInputForm from './pages/TaskManagement/AddTask';
 import ContactPage from './pages/Contact/Contact';
 import Loader2 from './components/ui/Loading2';
-import AboutUs from './pages/About/About';
 
 function App() {
   return (

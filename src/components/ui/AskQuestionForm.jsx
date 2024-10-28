@@ -8,6 +8,7 @@ const AskQuestionForm = () => {
     const [question, setQuestion] = useState('');
     const [entries, setEntries] = useState([]);
     const [answer, setAnswer] = useState('');
+    // const [loading,setLoading] = useState(false);
     const [generatingAnswer, setGeneratingAnswer] = useState(false); // Use boolean for loading state
     const id = useSelector(selectCurrentUid)
     // Format journal entries for the API

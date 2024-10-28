@@ -13,6 +13,8 @@ const JournalEntriesByDate = () => {
     const [loading, setLoading] = useState(false);
     const [gotdate, setgotdate] = useState('')
     const id = useSelector(selectCurrentUid)
+    
+
     const fetchEntriesByDate = async (date) => {
         setLoading(true);
         try {
