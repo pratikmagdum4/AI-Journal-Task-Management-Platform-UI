@@ -1,26 +1,12 @@
-<<<<<<< HEAD
-// GoalEntryForm.js
-import React, { useState } from 'react';
-=======
+
+
 import React, { useEffect, useState } from 'react';
->>>>>>> main
+
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectCurrentUid } from '../../redux/authSlice';
 import { BASE_URL } from '../../api';
-<<<<<<< HEAD
 
-const GoalEntryForm = ( ) => {
-    const [goalDescription, setGoalDescription] = useState('');
-    const [goalCategory, setGoalCategory] = useState('');
-    const [goals, setGoals] = useState([]);
-    const id = useSelector(selectCurrentUid);
-    // Async function to send goal to the server
-    const sendGoalToServer = async (newGoal) => {
-        try {
-            const response = await axios.post(`${BASE_URL}/user/goals/add/${id}`, newGoal);
-            console.log('Goal saved:', response.data); // Log response data
-=======
 import { toast } from 'react-toastify';
 import { debounce } from 'lodash';
 
@@ -42,16 +28,12 @@ const GoalEntryForm = () => {
             const response = await axios.post(`${BASE_URL}/user/goals/add/${id}`, newGoal);
             console.log('Goal saved:', response.data); // Log response data
             setGoalDescription('');
->>>>>>> main
+
         } catch (error) {
             console.error('Error sending goal to server:', error);
         }
     };
 
-<<<<<<< HEAD
-    const handleAddGoal = async (e) => {
-        e.preventDefault();
-=======
     // useEffect to fetch questions after goalDescription is set
     useEffect(() => {
         if (!goalDescription.trim()) return;
@@ -97,24 +79,16 @@ const GoalEntryForm = () => {
         setLoading(true);
 
         console.log("The questions generated are", goalQuestions);
->>>>>>> main
         if (goalDescription.trim() && goalCategory.trim()) {
             const newGoal = {
                 goalDescription,
                 goalCategory,
-<<<<<<< HEAD
-                userId:id
-            };
-            setGoals([...goals, newGoal]);
-            await sendGoalToServer(newGoal); // Send the goal to the server
-=======
                 userId: id,
                 questions: goalQuestions
             };
             setGoals([...goals, newGoal]);
             if (goalQuestions)
                 await sendGoalToServer(newGoal); // Send the goal to the server
->>>>>>> main
             setGoalDescription(''); // Clear input fields after adding
             setGoalCategory('');
         }
@@ -141,12 +115,7 @@ const GoalEntryForm = () => {
                 <button
                     type="submit"
                     className="mt-2 w-full p-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"
-<<<<<<< HEAD
-                >
-                    Add Goal
-=======
                 >{loading ? "Adding the goal" : "Add goal"}
->>>>>>> main
                 </button>
             </form>
             <ul className="list-disc pl-4">
