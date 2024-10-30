@@ -10,6 +10,7 @@ import TaskInputForm from './pages/TaskManagement/AddTask';
 import ContactPage from './pages/Contact/Contact';
 import Loader2 from './components/ui/Loading2';
 import AboutUs from './pages/About/About';
+import GoalMilestoneTracker from './components/ui/GoalMilestoneTracker';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/c" element={<ContactPage />} /> {/* Signup route */}
           <Route path="/l" element={<Loader2 />} /> {/* Signup route */}
           <Route path="/a" element={<AboutUs />} /> {/* Signup route */}
+          <Route path="/g" element={<GoalMilestoneTracker />} /> {/* Signup route */}
 
           {/* Private route for the Student Dashboard (protected and role-based) */}
           <Route
