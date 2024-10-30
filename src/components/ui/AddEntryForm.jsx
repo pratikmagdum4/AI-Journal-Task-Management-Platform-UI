@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BASE_URL } from '../../api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectCurrentUid } from '../../redux/authSlice';
 import { toast } from 'react-toastify';
 import Loader2 from './Loading2';
@@ -13,8 +13,8 @@ const AddEntryForm = () => {
     const [goalQuestions, setGoalQuestions] = useState([]);
     const [questionAnswers, setQuestionAnswers] = useState([]);
     const [goals, setGoals] = useState([]);
+    const [selectedGoal, setSelectedGoal] = useState(null); // Track selected goal
     const userId = useSelector(selectCurrentUid);
-    const dispatch = useDispatch();
 
     useEffect(() => {
         // Fetch goals on initial load
@@ -26,46 +26,20 @@ const AddEntryForm = () => {
         try {
             const response = await axios.get(`${BASE_URL}/user/goals/${userId}`);
             setGoals(response.data);
+            console.log("The goals are", response.data)
         } catch (error) {
             console.error("Error fetching goals:", error);
             toast.error("Could not retrieve goals. Please try again later.");
         }
     };
 
-    // Fetch questions only if the user chooses to answer them today
-    useEffect(() => {
-        const fetchGoalQuestions = async () => {
-            if (goals.length === 0 || !showQuestions) return;
-
-            setLoading(true);
-            try {
-                const goalDescriptions = goals.map(goal => goal.goalDescription).join(", ");
-                const response = await axios.post(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
-                    {
-                        contents: [
-                            {
-                                parts: [
-                                    {
-                                        text: `Generate 3 questions to track progress for these goals: "${goalDescriptions}".`
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                );
-                const generatedQuestions = response.data.candidates[0].content.parts[0].text.split("\n");
-                setGoalQuestions(generatedQuestions);
-            } catch (error) {
-                console.error('Error fetching goal-related questions:', error);
-                toast.error('Failed to generate goal questions. Please try again.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchGoalQuestions();
-    }, [goals, showQuestions]);
+    // Handle selecting a goal to view its questions
+    const handleSelectGoal = (goal) => {
+        setSelectedGoal(goal);
+        setGoalQuestions(goal.questions || []); // Set questions of the selected goal
+        setShowQuestions(true); // Show questions for the selected goal
+        setQuestionAnswers(new Array(goal.questions.length).fill('')); // Initialize answer array
+    };
 
     // Format answers to descriptive statements
     const formatAnswersToText = async (answers) => {
@@ -121,6 +95,7 @@ const AddEntryForm = () => {
             setEntryContent('');
             setQuestionAnswers([]);
             setShowQuestions(false); // Reset questions for the next day
+            setSelectedGoal(null); // Reset selected goal
         } catch (error) {
             console.error("Error adding entry:", error);
             toast.error("Error adding entry. Please try again.");
@@ -134,16 +109,24 @@ const AddEntryForm = () => {
             <form onSubmit={handleAddEntry} className="p-4 border rounded-lg bg-gray-100 shadow-lg relative">
                 <h2 className="text-xl font-semibold mb-4">Add New Entry</h2>
 
-                {/* Toggle to show goal-related questions */}
-                <button
-                    type="button"
-                    onClick={() => setShowQuestions(!showQuestions)}
-                    className="mb-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-                >
-                    {showQuestions ? "Hide Goal Questions" : "Show Goal Questions if not answered today!!"}
-                </button>
+                {/* Goal Selection */}
+                <div className="mb-4">
+                    <label className="block font-semibold mb-2">Select a Goal</label>
+                    <select
+                        onChange={(e) => handleSelectGoal(goals.find(g => g._id === e.target.value))}
+                        value={selectedGoal ? selectedGoal._id : ''}
+                        className="w-full p-2 border rounded"
+                    >
+                        <option value="">-- Select a Goal --</option>
+                        {goals.map((goal) => (
+                            <option key={goal._id} value={goal._id}>
+                                {goal.goalDescription}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                {/* Display goal-related questions if toggled on */}
+                {/* Display goal-related questions if a goal is selected */}
                 {showQuestions && goalQuestions.map((question, index) => (
                     <div key={index} className="mb-4">
                         <label className="block font-semibold mb-2">{question}</label>
@@ -157,6 +140,7 @@ const AddEntryForm = () => {
                     </div>
                 ))}
 
+                {/* Entry Content */}
                 <textarea
                     value={entryContent}
                     onChange={(e) => setEntryContent(e.target.value)}

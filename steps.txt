@@ -2,3 +2,6 @@
 2)integrate with api of google to connect with the info of entries for quesiotn answer feature 
 3)Get all entries nodejs endpoint 
 4) get all entries react frontend to send it to flask server then to google or to see if we can send it directly to google api 
+
+
+5) Edit option for goal Questions  and goals , if edited them regenerate questions 

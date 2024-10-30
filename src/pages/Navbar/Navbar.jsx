@@ -5,6 +5,7 @@ import { logOut } from "../../redux/authSlice"; // Import updated logOut action
 import { useNavigate } from 'react-router-dom'; // For navigation after logout
 import "../../components/styles/navbar.css";
 import { Link } from "react-router-dom"; // Import Link
+import { logo } from "../../assets/exportImages";
 
 function Navbar() {
     const navRef = useRef();
@@ -28,7 +29,9 @@ function Navbar() {
 
     return (
         <header>
-            <h3>LOGO</h3>
+            <div className="h-12 w-16">
+           <img src={logo} alt="Logo" />
+            </div>
             <nav ref={navRef}>
                 <Link to="/">Home</Link> {/* Replaced with Link */}
                 {/* Conditionally render based on authentication status */}

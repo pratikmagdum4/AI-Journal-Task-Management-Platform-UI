@@ -21,7 +21,7 @@ const GoalAnalyzer = () => {
     // Function to analyze goal
     async function analyzeGoal(e) {
         e.preventDefault();
-        console.log("Entries for analysis: ", entries);
+        // console.log("Entries for analysis: ", entries);
         setAnalyzingGoal(true);
 
         const formattedEntries = formatEntriesForAPI();
@@ -58,7 +58,7 @@ const GoalAnalyzer = () => {
         const fetchEntries = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/api/journal/get-all-entries/${id}`);
-                console.log("Fetched entries:", response.data);
+                // console.log("Fetched entries:", response.data);
                 setEntries(response.data);
             } catch (error) {
                 console.error('Error fetching entries:', error);
