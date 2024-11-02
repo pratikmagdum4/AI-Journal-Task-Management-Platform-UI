@@ -6,6 +6,7 @@ import AskQuestionForm from '../../components/ui/AskQuestionForm';
 import Navbar from '../Navbar/Navbar';
 import GoalEntryForm from '../../components/ui/GoalEntryForm'; // Import the new Goal Entry component
 import GoalAnalyzer from '../../components/ui/GoalAnalyser';
+import HealthInsight from './HealthInsight';
 const StudentDashboard = () => {
     return (
         <>
@@ -33,6 +34,9 @@ const StudentDashboard = () => {
                 {/* New Ask Question Section */}
                 <div className="mt-12">
                     <AskQuestionForm />
+                </div>
+                <div className="mt-12">
+                    <HealthInsight />
                 </div>
             </div>
         </>

@@ -9,7 +9,7 @@ const ReminderNotification = ({ currentPath }) => {
     useEffect(() => {
         if (currentPath === '/feed') return; // Do not show notification on the feedback page
 
-        const delay = 3000; // 5 minutes in milliseconds
+        const delay = 200000; // 5 minutes in milliseconds
 
         const reminderInterval = setInterval(() => {
             toast.info(
