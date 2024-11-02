@@ -5,7 +5,7 @@ import { logOut } from "../../redux/authSlice"; // Import updated logOut action
 import { useNavigate } from 'react-router-dom'; // For navigation after logout
 import "../../components/styles/navbar.css";
 import { Link } from "react-router-dom"; // Import Link
-import { logo } from "../../assets/exportImages";
+import { logo, logo3 } from "../../assets/exportImages";
 
 function Navbar() {
     const navRef = useRef();
@@ -30,7 +30,7 @@ function Navbar() {
     return (
         <header>
             <div className="h-12 w-16">
-           <img src={logo} alt="Logo" />
+                <img src={logo3} alt="Logo" />
             </div>
             <nav ref={navRef}>
                 <Link to="/">Home</Link> {/* Replaced with Link */}
