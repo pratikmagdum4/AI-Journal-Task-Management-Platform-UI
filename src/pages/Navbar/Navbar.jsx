@@ -28,11 +28,11 @@ function Navbar() {
     };
 
     return (
-        <header>
+        <header className="z-10">
             <div className="h-12 w-16">
                 <img src={logo3} alt="Logo" />
             </div>
-            <nav ref={navRef}>
+            <nav ref={navRef} className="z-10">
                 <Link to="/">Home</Link> {/* Replaced with Link */}
                 {/* Conditionally render based on authentication status */}
                 {!isAuthenticated ? (
@@ -55,7 +55,7 @@ function Navbar() {
                     <FaTimes />
                 </button>
             </nav>
-            <button className="nav-btn" onClick={showNavbar}>
+            <button className="nav-btn " onClick={showNavbar}>
                 <FaBars />
             </button>
         </header>

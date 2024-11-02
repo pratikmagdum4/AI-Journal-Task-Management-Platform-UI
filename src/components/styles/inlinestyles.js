@@ -1,5 +1,6 @@
 export const styles = {
   container: {
+    position: "relative",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
