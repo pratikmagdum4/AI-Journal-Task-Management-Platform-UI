@@ -11,6 +11,8 @@ import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 import { Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentUid } from "../../redux/authSlice";
+import Loading from '../../components/ui/Loading';
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -21,6 +23,7 @@ const Signup = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading,setLoading] = useState(false);
   const id = useSelector(selectCurrentUid)
   useEffect(()=>{
     if (id)
@@ -46,7 +49,7 @@ const Signup = () => {
     } else {
       setError("");
       console.log("The formdata is ", formData);
-
+    setLoading(true)
       try {
         const response = await axios.post(
           `${BASE_URL}/api/signup`,
@@ -59,6 +62,7 @@ const Signup = () => {
         navigate("/login")
         
       } catch (error) {
+        setLoading(false);
         console.error("The error is", error.response?.data?.msg || error.message);
         setError(error.response?.data?.msg || "Signup failed. Please try again.");
         toast.error(error.response?.data?.msg || "Signup failed. Please try again."); // Show error toast
@@ -70,7 +74,7 @@ const Signup = () => {
     <>
       <Navbar />
       <ToastContainer /> {/* Toast Container to show toast notifications */}
-
+      {loading ? (<><Loading/></>):(<>
       <div style={styles.container} >
         <motion.div
           className="signup-form"
@@ -171,6 +175,7 @@ const Signup = () => {
           </form>
         </motion.div>
       </div>
+      </>)}
     </>
   );
 };

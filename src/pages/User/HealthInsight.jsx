@@ -1,95 +1,154 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Chart, LineElement, CategoryScale, LinearScale, PointElement, LineController } from 'chart.js';
+import { Line } from "react-chartjs-2";
+import { BASE_URL } from "../../api";
+import { useSelector } from "react-redux";
+import { selectCurrentUid } from "../../redux/authSlice";
 
-// HealthInsight Component
-const HealthInsight = ({ answers, goalQuestions }) => {
-    const [formattedText, setFormattedText] = useState("");
+// Register Chart.js components
+Chart.register(LineElement, CategoryScale, LinearScale, PointElement, LineController);
+
+const HealthInsight = () => {
+    const [entries, setEntries] = useState([]);
+    const [healthData, setHealthData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const id = useSelector(selectCurrentUid);
+
+    useEffect(() => {
+        const fetchEntries = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/journal/get-all-entries/${id}`);
+                setEntries(response.data); // Store entries in the state
+            } catch (error) {
+                console.error("Error fetching entries:", error);
+            }
+        };
+        fetchEntries();
+    }, [id]);
 
     useEffect(() => {
         const fetchFormattedText = async () => {
-            setLoading(true);
-            const text = await formatAnswersToText(answers, goalQuestions);
-            setFormattedText(text);
-            setLoading(false);
+            if (entries.length === 0) return;
+
+            const formattedEntries = entries.map((entry, index) => (
+                `Entry ${index + 1}: ${entry.content} (Timestamp: ${new Date(entry.date).toLocaleString()})`
+            )).join("\n\n");
+
+            try {
+                const response = await axios.post(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
+                    {
+                        contents: [
+                            {
+                                parts: [
+                                    {
+                                        text: `Based on the entries data, draw analysis on health such as physical, mental, and emotional health. ${formattedEntries}`,
+                                    },
+                                ],
+                            },
+                        ],
+                    }
+                );
+
+                const resultText = response.data.candidates[0].content.parts[0].text;
+                console.log("The result is",resultText)
+                const parsedData = parseHealthData(resultText);
+                setHealthData(parsedData);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error generating insights:", error);
+                setLoading(false);
+            }
         };
 
         fetchFormattedText();
-    }, [answers, goalQuestions]);
+    }, [entries]);
+
+    // Parse resultText to extract health insights
+    const parseHealthData = (resultText) => {
+        const categories = resultText.split("**").filter(text => text.trim() !== "");
+        const healthData = {
+            physical: [],
+            mental: [],
+            emotional: []
+        };
+
+        categories.forEach(category => {
+            const [title, ...entries] = category.split("\n").filter(line => line.trim());
+            const categoryName = title.toLowerCase().includes("physical")
+                ? "physical"
+                : title.toLowerCase().includes("mental")
+                    ? "mental"
+                    : "emotional";
+
+            entries.forEach(entryText => {
+                const entryNumberMatch = entryText.match(/Entry (\d+)/);
+                if (entryNumberMatch) {
+                    const entryNumber = parseInt(entryNumberMatch[1], 10);
+                    const score = determineSentimentScore(entryText);
+                    healthData[categoryName].push({ entry: entryNumber, score, description: entryText });
+                }
+            });
+        });
+
+        return healthData;
+    };
+
+    // Helper function to assign sentiment scores
+    const determineSentimentScore = (entryText) => {
+        const positiveKeywords = ["contentment", "fulfilled", "clarity", "happy", "accomplished", "positive"];
+        const negativeKeywords = ["unmotivated", "overwhelmed", "stress", "emptiness", "frustration", "disappointment"];
+
+        let score = 0;
+        positiveKeywords.forEach(word => {
+            if (entryText.toLowerCase().includes(word)) score += 1;
+        });
+        negativeKeywords.forEach(word => {
+            if (entryText.toLowerCase().includes(word)) score -= 1;
+        });
+
+        return score;
+    };
+
+    // Generate chart data for Chart.js
+    const generateChartData = (healthData) => ({
+        labels: healthData.physical.map(data => `Entry ${data.entry}`),  // Map entries to labels
+        datasets: [
+            {
+                label: "Physical Health",
+                data: healthData.physical.map(entry => entry.score),
+                borderColor: "rgba(75, 192, 192, 1)",
+                fill: false,
+            },
+            {
+                label: "Mental Health",
+                data: healthData.mental.map(entry => entry.score),
+                borderColor: "rgba(153, 102, 255, 1)",
+                fill: false,
+            },
+            {
+                label: "Emotional Health",
+                data: healthData.emotional.map(entry => entry.score),
+                borderColor: "rgba(255, 159, 64, 1)",
+                fill: false,
+            },
+        ],
+    });
+
 
     return (
         <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-3xl mx-auto">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Health Insights</h2>
-
             {loading ? (
                 <p className="text-gray-500 text-center">Loading insights...</p>
+            ) : healthData ? (
+                <Line key={JSON.stringify(healthData)} data={generateChartData(healthData)} />
             ) : (
-                <div className="space-y-6">
-                    {/* Display insight categories */}
-                    <HealthCategory title="Physical Health" insight={formattedText} />
-                    <HealthCategory title="Mental Health" insight={formattedText} />
-                    <HealthCategory title="Emotional Health" insight={formattedText} />
-                </div>
+                <p className="text-gray-500 text-center">No data available.</p>
             )}
         </div>
     );
-};
-
-// Individual Health Category Display
-const HealthCategory = ({ title, insight }) => (
-    <div className="bg-gray-100 p-4 rounded-lg">
-        <h3 className="text-xl font-medium text-gray-700">{title}</h3>
-        <p className="text-gray-600 mt-2">{insight}</p>
-        <div className="flex mt-4 space-x-4">
-            {/* Visual Indicators */}
-            <Indicator label="Good" color="bg-green-400" value={Math.random() * 100} />
-            <Indicator label="Average" color="bg-yellow-400" value={Math.random() * 100} />
-            <Indicator label="Poor" color="bg-red-400" value={Math.random() * 100} />
-        </div>
-    </div>
-);
-
-// Indicator for health status with dynamic width
-const Indicator = ({ label, color, value }) => (
-    <div className="w-full">
-        <p className="text-sm text-gray-500">{label}</p>
-        <div className="relative h-2 rounded-full overflow-hidden bg-gray-300">
-            <div
-                className={`${color} h-full`}
-                style={{ width: `${value}%` }}
-            ></div>
-        </div>
-        <p className="text-xs text-gray-500 mt-1">{Math.round(value)}%</p>
-    </div>
-);
-
-// formatAnswersToText function (use your existing function)
-const formatAnswersToText = async (answers, goalQuestions) => {
-    try {
-        const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
-            {
-                contents: [
-                    {
-                        parts: [
-                            {
-                                text: `Convert these yes/no answers into descriptive statements: ${answers
-                                    .map(
-                                        (answer, index) =>
-                                            `Q: ${goalQuestions[index]}, A: ${answer || "Not Answered"}`
-                                    )
-                                    .join(" | ")}`
-                            }
-                        ]
-                    }
-                ]
-            }
-        );
-        return response.data.candidates[0].content.parts[0].text;
-    } catch (error) {
-        console.error("Error formatting answers:", error);
-        return "Error generating insights.";
-    }
 };
 
 export default HealthInsight;
