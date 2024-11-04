@@ -62,7 +62,7 @@ const HealthInsight = () => {
             }
         };
 
-        fetchFormattedText();
+        // fetchFormattedText();
     }, [entries]);
 
     // Parse resultText to extract health insights
