@@ -16,6 +16,7 @@ import ReminderNotification from './components/ui/ReminderNotification';
 import FeedbackPage from './pages/Feedback/FeedbackPage';
 import PrivateRoute from './components/services/PrivateRoute';
 import ErrorPage from './components/ui/Error';
+import MoodCalendar from './pages/Mood/MoodScoring';
 
 function App() {
   const isAuth = useSelector(isAuthenticated);
@@ -38,6 +39,15 @@ function App() {
             element={
               <PrivateRoute
                 element={<StudentDashboard />}
+                allowedRoles={["user"]}
+              />
+            }
+          />
+          <Route
+            path="/login/u/m"
+            element={
+              <PrivateRoute
+                element={<MoodCalendar />}
                 allowedRoles={["user"]}
               />
             }

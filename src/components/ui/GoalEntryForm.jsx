@@ -112,13 +112,15 @@ const GoalEntryForm = () => {
 
     // Mark goal as done and delete it
     const handleMarkGoalAsDone = async (goalId) => {
-        try {
-            await axios.delete(`${BASE_URL}/user/goals/${goalId}`);
-            setGoals((prevGoals) => prevGoals.filter((goal) => goal._id !== goalId));
-            toast.success('Goal marked as done!');
-        } catch (error) {
-            console.error('Error deleting goal:', error);
-            toast.error('Failed to mark goal as done. Please try again.');
+        if (confirm("Are you sure you want to delete this goal?")) {
+            try {
+                await axios.delete(`${BASE_URL}/user/goals/delete/${goalId}`);
+                setGoals((prevGoals) => prevGoals.filter((goal) => goal._id !== goalId));
+                toast.success('Goal marked as done!');
+            } catch (error) {
+                console.error('Error deleting goal:', error);
+                toast.error('Failed to mark goal as done. Please try again.');
+            }
         }
     };
 

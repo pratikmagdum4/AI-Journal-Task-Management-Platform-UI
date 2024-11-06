@@ -34,7 +34,7 @@ const AskQuestionForm = () => {
                         {
                             parts: [
                                 {
-                                    text: `Following is my question, give me an answer based on the following entries with their timestamp:\n\n${question}\n\n${formattedEntries}`
+                                    text: `Following is my question, give me an answer based on the following entries :\n\n${question}\n\n${formattedEntries}`
                                 }
                             ]
                         }
