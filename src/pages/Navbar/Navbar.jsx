@@ -49,8 +49,9 @@ function Navbar() {
                         </button>
                     </>
                 )}
-                <Link to="/a">About Us</Link> {/* Replaced with Link */}
-                <Link to="/c">Contact</Link> {/* Replaced with Link */}
+                {/* <Link to="/a">About Us</Link>  */}
+                <Link to="/login/u/m">Mood </Link> 
+                <Link to="/c">Contact</Link> 
                 <button className="nav-btn nav-close-btn" onClick={showNavbar}>
                     <FaTimes />
                 </button>

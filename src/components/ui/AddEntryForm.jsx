@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUid } from '../../redux/authSlice';
 import { toast } from 'react-toastify';
 import Loader2 from './Loading2';
-
+import { getMoodAndScore } from '../../utlis/HealthHelper';
 const AddEntryForm = () => {
     const [entryContent, setEntryContent] = useState('');
     const [loading, setLoading] = useState(false);
@@ -69,33 +69,7 @@ const AddEntryForm = () => {
         setQuestionAnswers(updatedAnswers);
     };
 
-    const getMoodAndScore = async (content) => {
-        try {
-            const response = await axios.post(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
-                {
-                    contents: [
-                        {
-                            parts: [
-                                {
-                                    text: `Analyze the following entry to identify the mood state with one keyword and its intensity on a scale of 1-10. Select from these moods: happiness, sadness, anger, fear, surprise, disgust, joy, excitement, calmness, anxiety, frustration, boredom, confusion, contentment, indifference. Entry: "${content}" ,return  only two things a word with relevant emoji and score digit `,
-                                },
-                            ],
-                        },
-                    ],
-                }
-            );
-            const moodData = response.data.candidates[0].content.parts[0].text.split('|');
-            
-            const [retrievedMood, retrievedMoodScore] = moodData[0].split(',');
-            console.log("The mood ", retrievedMood)
-            console.log("The mood score ", retrievedMoodScore)
-            return { retrievedMood, retrievedMoodScore };
-        } catch (error) {
-            console.error("Error fetching mood:", error);
-            return { mood: "Unknown", moodScore: "0" };
-        }
-    };
+    
     // const getEntriesForDays = async()=>[
     //     const response = axios.get(`${BASE_URL}/api/journal/day-entries/${id}`)
     // setDayEntryContent(response.data.content)
@@ -106,70 +80,58 @@ const AddEntryForm = () => {
 
         try {
             const formattedAnswers = showQuestions ? await formatAnswersToText(questionAnswers) : "";
-            const finalContent = `${formattedAnswers}\n\n${entryContent}`;
-
-            // Individual entry object to save in the other schema
+            const finalContent = formattedAnswers ? `${formattedAnswers}\n\n${entryContent}` : entryContent;
             const newIndividualEntry = {
+                userId,
+                CombinedEntry: { content: finalContent, timestamp: new Date() },
+                date: new Date().toISOString().split('T')[0],
+            };
+            const newIndividualEntry2 = {
                 userId,
                 content: finalContent,
                 date: new Date().toISOString().split('T')[0],
             };
-
-            // Save the individual entry to the other schema
-            await axios.post(`${BASE_URL}/api/journal/add-entry`, newIndividualEntry);
-
-            // Check if there's already a DayEntry for the user on the same date
-            console.log("The date is ",newIndividualEntry.date)
+            console.log("The date is ",newIndividualEntry2.date)
+            await axios.post(`${BASE_URL}/api/journal/add-entry`, newIndividualEntry2);
             let existingContent = '';
-            try {
-                // Fetch DayEntry for the specific user and date
-                const { data: dayEntryResponse } = await axios.get(`${BASE_URL}/api/journal/day/day-entries/${userId}`, newIndividualEntry.date);
-                console.log("The dayEntryResponse", dayEntryResponse.data)
-                // Access the CombinedEntry from the first item in the array, if it exists
-                existingContent = '';
 
-                // Iterate over each entry in the response and concatenate the CombinedEntry
-                dayEntryResponse.data.forEach(entry => {
-                    if (entry.CombinedEntry) {
-                        existingContent += `\n\n${entry.CombinedEntry}`;
-                    }
-                });
+            try {
+                const { data: dayEntryResponse } = await axios.get(
+                    `${BASE_URL}/api/journal/day/day-entry/${userId}/${newIndividualEntry.date}`
+                );
+                console.log("The date is", newIndividualEntry.date)
+                if (dayEntryResponse?.data?.CombinedEntry?.content) {
+                    existingContent = dayEntryResponse.data.CombinedEntry.content;
+                }
             } catch (error) {
-                if (error.response && error.response.status === 404) {
+                if (error.response?.status === 404) {
                     console.log("No entry found for this date.");
-                    // If no existing entry found, set existingContent to empty string
-                    existingContent = '';
                 } else {
-                    // If another error occurred, throw it
                     throw error;
                 }
             }
-
-            // Concatenate the new content to the existing content if any
-            const updatedContent = existingContent ? `${existingContent}\n\n${finalContent}` : finalContent;
-            console.log("The updated content ",updatedContent)
-            console.log("The existingContent content ",existingContent)
-            // Recalculate mood and moodScore based on updated content
+            console.log("The exixting is ",existingContent)
+            const updatedContent = existingContent
+                ? `${existingContent}\n\n${finalContent}`
+                : finalContent;
+            console.log("the updated is ",updatedContent)
             const { retrievedMood, retrievedMoodScore } = await getMoodAndScore(updatedContent);
             const mood = retrievedMood;
             const moodScore = retrievedMoodScore;
 
-            // Day entry object to either update or create in DayEntry schema
             const dayEntryData = {
                 userId,
-                CombinedEntry: updatedContent,
+                CombinedEntry: { content: updatedContent, timestamp: new Date() },
                 Date: newIndividualEntry.date,
                 mood,
                 moodScore,
             };
 
-            if (existingContent) {
-                // If entry exists, update it with the concatenated content
-                await axios.put(`${BASE_URL}/api/journal/day/update-day-entry/${userId}/${newIndividualEntry.date}`, dayEntryData);
-            } else {
-                // If entry does not exist, create a new one
+            // if (existingContent) {
+            //     await axios.put(`${BASE_URL}/api/journal/day/update-day-entry`, dayEntryData);
+            // } else {
                 await axios.post(`${BASE_URL}/api/journal/day/add-day-entry`, dayEntryData);
-            }
+            // }
 
             toast.success("Entry added successfully");
             setEntryContent('');

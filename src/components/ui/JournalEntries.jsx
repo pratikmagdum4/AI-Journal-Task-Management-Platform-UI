@@ -16,6 +16,9 @@ const JournalEntriesByDate = () => {
     const [editedContent, setEditedContent] = useState('');
     const id = useSelector(selectCurrentUid);
 
+
+
+
     // Fetch entries by date
     const fetchEntriesByDate = async (date) => {
         setLoading(true);
@@ -29,7 +32,7 @@ const JournalEntriesByDate = () => {
             const response = await axios.get(`${BASE_URL}/api/journal/get-entry`, {
                 params: { date: formattedDate, userId: id },
             });
-
+            console.log("the entries are",response)
             setEntries(response.data);
         } catch (error) {
             console.error('Error fetching entries:', error);

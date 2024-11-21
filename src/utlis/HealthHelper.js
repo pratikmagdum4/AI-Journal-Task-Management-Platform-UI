@@ -1,3 +1,4 @@
+import axios from "axios";
 const parseHealthData = (resultText) => {
   // Split each health category
   const categories = resultText
@@ -54,5 +55,52 @@ const determineSentimentScore = (entryText) => {
 
   return score;
 };
+const getMoodAndScore = async (content) => {
+  try {
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${
+        import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
+      }`,
+      {
+        contents: [
+          {
+            parts: [
+              {
+                text: `Analyze the following entry to identify the mood state with one keyword and its intensity on a scale of 1-10. Select from these moods: happiness, sadness, anger, fear, surprise, disgust, joy, excitement, calmness, anxiety, frustration, boredom, confusion, contentment, indifference. 
+                                
+                                Entry: "${content}" 
 
-export { determineSentimentScore, parseHealthData };
+                                Return the result as a JSON object in the following structure:
+                                {
+                                    "mood": "<mood> <emoji>",
+                                    "score": <score>
+                                }
+
+                                If you are unable to determine the mood, return:
+                                {
+                                    "mood": "neutral",
+                                    "score": 0
+                                }`,
+              },
+            ],
+          },
+        ],
+      }
+    );
+
+    const moodData = JSON.parse(
+      response.data.candidates[0].content.parts[0].text.trim()
+    );
+
+    console.log("The mood:", moodData.mood);
+    console.log("The mood score:", moodData.score);
+    const retrievedMood = moodData.mood;
+    const retrievedMoodScore = moodData.score;
+    return { retrievedMood, retrievedMoodScore };
+  } catch (error) {
+    console.error("Error fetching mood:", error);
+    return { mood: "Unknown", score: 0 };
+  }
+};
+
+export { determineSentimentScore, parseHealthData,getMoodAndScore };

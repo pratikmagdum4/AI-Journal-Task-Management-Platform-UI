@@ -27,6 +27,7 @@ const MoodCalendar = () => {
         } catch (error) {
             console.error("Error fetching entries:", error);
         } finally {
+            
             setLoading(false);
         }
     };
