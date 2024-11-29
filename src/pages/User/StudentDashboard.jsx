@@ -1,5 +1,5 @@
 // StudentDashboard.js
-import React from 'react';
+import React, { useState } from 'react';
 import JournalEntriesByDate from '../../components/ui/JournalEntries';
 import AddEntryForm from '../../components/ui/AddEntryForm';
 import AskQuestionForm from '../../components/ui/AskQuestionForm';
@@ -8,6 +8,12 @@ import GoalEntryForm from '../../components/ui/GoalEntryForm'; // Import the new
 import GoalAnalyzer from '../../components/ui/GoalAnalyser';
 import HealthInsight from './HealthInsight';
 const StudentDashboard = () => {
+    const [newEntryAdded, setNewEntryAdded] = useState(false);
+
+    // Function to handle when a new entry is added
+    const handleNewEntryAdded = () => {
+        setNewEntryAdded((prev) => !prev); // Toggle the state to trigger refresh in JournalEntriesByDate
+    };
     return (
         <>
             <Navbar />
@@ -15,10 +21,10 @@ const StudentDashboard = () => {
                 <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <AddEntryForm />
+                        <AddEntryForm onNewEntryAdded={handleNewEntryAdded} />
                     </div>
                     <div>
-                        <JournalEntriesByDate />
+                        <JournalEntriesByDate newEntryAdded={newEntryAdded} />
                     </div>
                 </div>
 
@@ -36,7 +42,7 @@ const StudentDashboard = () => {
                     <AskQuestionForm />
                 </div>
                 <div className="mt-12">
-                    <HealthInsight />
+                    {/* <HealthInsight /> */}
                 </div>
             </div>
         </>

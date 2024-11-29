@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import Loader2 from './Loading2';
 import { getMoodAndScore } from '../../utlis/HealthHelper';
 
-const AddEntryForm = () => {
+const AddEntryForm = ({ onNewEntryAdded }) => {
     const [entryContent, setEntryContent] = useState('');
     const [loading, setLoading] = useState(false);
     const [showQuestions, setShowQuestions] = useState(false);
@@ -133,7 +133,7 @@ console.log("The day entry is ",dayEntryData)
             // } else {
                 await axios.post(`${BASE_URL}/api/journal/day/add-day-entry`, dayEntryData);
             // }
-
+            onNewEntryAdded();
             toast.success("Entry added successfully");
             setEntryContent('');
             setQuestionAnswers([]);

@@ -7,7 +7,7 @@ import { BASE_URL } from '../../api';
 import { useSelector } from 'react-redux';
 import { selectCurrentUid } from '../../redux/authSlice';
 
-const JournalEntriesByDate = () => {
+const JournalEntriesByDate = ({ newEntryAdded }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -123,7 +123,7 @@ const JournalEntriesByDate = () => {
     // Fetch entries whenever the date changes
     useEffect(() => {
         fetchEntriesByDate(selectedDate);
-    }, [selectedDate]);
+    }, [selectedDate, newEntryAdded]);
 
     return (
         <>
