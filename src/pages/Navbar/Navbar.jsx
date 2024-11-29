@@ -44,13 +44,15 @@ function Navbar() {
                     <>
                         <Link to="/login/u">Dashboard</Link> {/* Replaced with Link */}
                         <Link to="/login/t">Tasks</Link> {/* Replaced with Link */}
-                        <button className="logout-btn" onClick={handleLogout}>
+                            <Link to="/login/u/m">Mood </Link> 
+                        {/* <button className="logout-btn" onClick={handleLogout}>
                             Logout
-                        </button>
+                        </button> */}
+                        <Link onClick={handleLogout}>Logout</Link>
                     </>
                 )}
                 {/* <Link to="/a">About Us</Link>  */}
-                <Link to="/login/u/m">Mood </Link> 
+                
                 <Link to="/c">Contact</Link> 
                 <button className="nav-btn nav-close-btn" onClick={showNavbar}>
                     <FaTimes />

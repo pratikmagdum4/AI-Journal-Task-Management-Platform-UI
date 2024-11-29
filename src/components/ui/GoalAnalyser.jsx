@@ -5,27 +5,33 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUid } from '../../redux/authSlice';
 
 const GoalAnalyzer = () => {
-    const [goal, setGoal] = useState('');
+    const [goals, setGoals] = useState([]);
+    const [selectedGoal, setSelectedGoal] = useState('');
     const [entries, setEntries] = useState([]);
-    const [analysis, setAnalysis] = useState('');
+    const [analysis, setAnalysis] = useState(null);
     const [analyzingGoal, setAnalyzingGoal] = useState(false);
-    const id = useSelector(selectCurrentUid);
+    const userId = useSelector(selectCurrentUid);
 
     // Format entries for the API
     const formatEntriesForAPI = () => {
-        return entries.map((entry, index) => {
-            return `Entry ${index + 1}: ${entry.content} (Timestamp: ${new Date(entry.date).toLocaleString()})`;
-        }).join("\n\n");
+        return entries
+            .map((entry, index) => `Entry ${index + 1}: ${entry.content} (Timestamp: ${new Date(entry.date).toLocaleString()})`)
+            .join("\n\n");
     };
 
     // Function to analyze goal
     async function analyzeGoal(e) {
         e.preventDefault();
 
+        if (!selectedGoal) {
+            alert('Please select a goal to analyze.');
+            return;
+        }
+
         setAnalyzingGoal(true);
+        setAnalysis("Analyzing your goal progress... This may take a few moments.");
 
         const formattedEntries = formatEntriesForAPI();
-        setAnalysis("Analyzing your goal progress... This may take a few moments.");
 
         try {
             const response = await axios({
@@ -36,7 +42,14 @@ const GoalAnalyzer = () => {
                         {
                             parts: [
                                 {
-                                    text: `Analyze the following entries in relation to the goal: "${goal}". Provide insights on the user's progress in a short paragraph and provide few points to improve , give the response as like you are taking to a person and providing him this information in a conversation :\n\n${formattedEntries}`
+                                    text: `Analyze the following entries related to the goal: "${selectedGoal}". Provide insights in JSON format with the following structure:
+                                {
+                                    "Challenges_Encountered": [],
+                                    "Strategies_for_Overcoming_Challenges": [],
+                                    "Action_Planning": [],
+                                    "Additional_Tips": []
+                                }
+                                provide JSON response, along with any other explanation in json format only, fill all categories :\n\n${formattedEntries}`
                                 }
                             ]
                         }
@@ -44,7 +57,19 @@ const GoalAnalyzer = () => {
                 }
             });
 
-            setAnalysis(response.data.candidates[0].content.parts[0].text);
+            const responseText = response.data.candidates[0].content.parts[0].text;
+            console.log("Response from API:", responseText);
+
+            // Try parsing the response as JSON
+            let jsonResponse;
+            try {
+                jsonResponse = JSON.parse(responseText);
+                setAnalysis(jsonResponse);
+            } catch (parseError) {
+                console.error("JSON parsing error:", parseError);
+                setAnalysis("Sorry, the response was not in the expected JSON format. Please try again.");
+            }
+
         } catch (error) {
             console.error("Error:", error);
             setAnalysis("Sorry - Something went wrong. Please try again.");
@@ -53,32 +78,49 @@ const GoalAnalyzer = () => {
         setAnalyzingGoal(false);
     }
 
-    // Fetch all entries when the component loads
+    // Fetch all entries and goals when the component loads
     useEffect(() => {
         const fetchEntries = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/journal/get-all-entries/${id}`);
-
+                const response = await axios.get(`${BASE_URL}/api/journal/get-all-entries/${userId}`);
                 setEntries(response.data);
             } catch (error) {
                 console.error('Error fetching entries:', error);
             }
         };
+
+        const fetchGoals = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/user/goals/${userId}`);
+                console.log("The response goal i s",response)
+                setGoals(response.data);
+            } catch (error) {
+                console.error('Error fetching goals:', error);
+            }
+        };
+
         fetchEntries();
-    }, [id]);
+        fetchGoals();
+    }, [userId]);
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4">Analyze Your Goal Progress</h2>
             <form onSubmit={analyzeGoal}>
-                <textarea
-                    value={goal}
-                    onChange={(e) => setGoal(e.target.value)}
-                    placeholder="Enter your goal..."
-                    className="w-full p-4 border border-gray-300 rounded-lg mb-4"
-                    rows="3"
-                    required
-                />
+                <label className="block mb-2 text-gray-700">Select a Goal to Analyze:</label>
+                <select
+                    value={selectedGoal}
+                    onChange={(e) => setSelectedGoal(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                >
+                    <option value="">-- Select a Goal --</option>
+                    {goals.map((goal, index) => (
+                        <option key={index} value={goal.goalDescription}>
+                            {goal.goalDescription}
+                        </option>
+                    ))}
+                </select>
+
                 <button
                     type="submit"
                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
@@ -87,10 +129,44 @@ const GoalAnalyzer = () => {
                     {analyzingGoal ? "Analyzing Goal..." : "Analyze Goal"}
                 </button>
             </form>
+
             {analysis && (
                 <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-                    <h3 className="text-lg font-semibold">Goal Analysis:</h3>
-                    <p>{analysis}</p>
+                    <h3 className="text-lg font-semibold mb-2">Goal Analysis:</h3>
+
+                    {typeof analysis === 'string' ? (
+                        <p>{analysis}</p>
+                    ) : (
+                        <div>
+                            <h4 className="font-bold mt-4">Challenges Encountered:</h4>
+                            <ul className="list-disc pl-5">
+                                {analysis.Challenges_Encountered.map((challenge, index) => (
+                                    <li key={index}>{challenge}</li>
+                                ))}
+                            </ul>
+
+                            <h4 className="font-bold mt-4">Strategies for Overcoming Challenges:</h4>
+                            <ul className="list-disc pl-5">
+                                {analysis.Strategies_for_Overcoming_Challenges.map((strategy, index) => (
+                                    <li key={index}>{strategy}</li>
+                                ))}
+                            </ul>
+
+                            <h4 className="font-bold mt-4">Action Planning:</h4>
+                            <ul className="list-disc pl-5">
+                                {analysis.Action_Planning.map((action, index) => (
+                                    <li key={index}>{action}</li>
+                                ))}
+                            </ul>
+
+                            <h4 className="font-bold mt-4">Additional Tips:</h4>
+                            <ul className="list-disc pl-5">
+                                {analysis.Additional_Tips.map((tip, index) => (
+                                    <li key={index}>{tip}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
