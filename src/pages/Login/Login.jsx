@@ -41,6 +41,7 @@ function Login() {
                 const userId = response.data.result._id;
                 const name = response.data.result.name;
                 const role = response.data.role;
+                const email = response.data.email;
 
                 dispatch(setUserInfo({
                     user: response.data.result,
@@ -48,6 +49,7 @@ function Login() {
                     Uid: userId,
                     Name: name,
                     Role: role,
+                    Email: email,
                 }));
 
                 setTimeout(() => {

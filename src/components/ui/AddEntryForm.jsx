@@ -80,7 +80,7 @@ const AddEntryForm = () => {
 
         try {
             const formattedAnswers = showQuestions ? await formatAnswersToText(questionAnswers) : "";
-            const finalContent = formattedAnswers ? `${formattedAnswers}\n\n${entryContent}` : entryContent;
+            const finalContent = formattedAnswers ? `${formattedAnswers}${entryContent}` : entryContent;
             const newIndividualEntry = {
                 userId,
                 CombinedEntry: { content: finalContent, timestamp: new Date() },
@@ -126,7 +126,7 @@ const AddEntryForm = () => {
                 mood,
                 moodScore,
             };
-
+console.log("The day entry is ",dayEntryData)
             // if (existingContent) {
             //     await axios.put(`${BASE_URL}/api/journal/day/update-day-entry`, dayEntryData);
             // } else {

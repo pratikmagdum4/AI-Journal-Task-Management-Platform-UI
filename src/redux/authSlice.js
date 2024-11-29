@@ -42,6 +42,7 @@ const initialState = loadState() || {
   Role: null,
   Name: null,
   Dept: null,
+  Email: null,
   isAuthenticated: false,
 };
 
@@ -64,21 +65,30 @@ const authSlice = createSlice({
     },
 
     setUserInfo: (state, action) => {
-      const { user, token, Uid, Name, Role, Dept } = action.payload;
+      const { user, token, Uid, Name, Role, Dept, Email } = action.payload;
       state.currentUser = user;
       state.token = token;
       state.Uid = Uid;
       state.Name = Name;
       state.Role = Role;
       state.Dept = Dept;
+      state.Email = Email;
       state.isAuthenticated = true;
 
       // Check if user exists in the users array and update, otherwise add them
       const existingUserIndex = state.users.findIndex((u) => u.Uid === Uid);
       if (existingUserIndex !== -1) {
-        state.users[existingUserIndex] = { user, token, Uid, Name, Role, Dept };
+        state.users[existingUserIndex] = {
+          user,
+          token,
+          Uid,
+          Name,
+          Role,
+          Dept,
+          Email,
+        };
       } else {
-        state.users.push({ user, token, Uid, Name, Role, Dept });
+        state.users.push({ user, token, Uid, Name, Role, Dept, Email });
       }
 
       saveState(state);
@@ -98,6 +108,7 @@ const authSlice = createSlice({
       state.Name = null;
       state.Role = null;
       state.Dept = null;
+      state.Email = null;
       state.isAuthenticated = false;
 
       // Clear auth data from localStorage
@@ -125,6 +136,7 @@ export const selectCurrentUid = (state) => state.auth.Uid;
 export const selectCurrentName = (state) => state.auth.Name;
 export const selectCurrentRole = (state) => state.auth.Role;
 export const selectCurrentDept = (state) => state.auth.Dept;
+export const selectCurrentEmail = (state) => state.auth.Email;
 export const selectAllUsers = (state) => state.auth.users;
 export const isAuthenticated = (state) => state.auth.isAuthenticated;
 

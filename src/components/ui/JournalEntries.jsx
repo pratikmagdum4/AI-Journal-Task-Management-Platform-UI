@@ -75,12 +75,38 @@ const JournalEntriesByDate = () => {
     // Save edited entry function
     const handleSave = async (entryId) => {
         try {
+            // console.log("The entries",entries)
+            let currentEntry = '';
+            for (const entry of entries) {
+                if (entry._id === entryId) {
+                    currentEntry = entry;
+                    break;
+                }
+            }
+
+            // console.log("The cuurent content is",currentEntry.content)
             await axios.put(`${BASE_URL}/api/journal/update-entry/${entryId}`, {
                 entryId,
                 userId: id,
                 content: editedContent,
             });
-
+            const date = new Date(currentEntry.date);
+            const yearMonthDay = date.toISOString().split('T')[0];
+            console.log("The date is ",yearMonthDay)
+            let CombinedDayEntry;
+             try{
+                 const { date: dayEntry } = await axios.get(`${BASE_URL}/api/journal/day/day-entry/${id}/${yearMonthDay}`)
+                 CombinedDayEntry = dayEntry;
+                 console.log("The combined entry is",CombinedDayEntry)
+             }
+             catch(error)
+             {
+                 if (error.response?.status === 404) {
+                     console.log("No entry found for this date.");
+                 } else {
+                     throw error;
+                 }
+             }
             // Update the entries list with the edited entry
             setEntries(entries.map(entry => (
                 entry._id === entryId ? { ...entry, content: editedContent } : entry

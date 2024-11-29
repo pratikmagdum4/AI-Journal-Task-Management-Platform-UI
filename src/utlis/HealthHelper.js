@@ -102,5 +102,65 @@ const getMoodAndScore = async (content) => {
     return { mood: "Unknown", score: 0 };
   }
 };
+const extractTaskDetails = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-export { determineSentimentScore, parseHealthData,getMoodAndScore };
+  try {
+    const response = await axios({
+      url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${
+        import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
+      }`,
+      method: "post",
+      data: {
+        contents: [
+          {
+            parts: [
+              {
+                text: `Extract the task description and deadline from the following input text. Return the result as a JSON object in the following structure:
+                                {
+                                    "description": "<description>",
+                                    "deadline": "<deadline>"
+                                }
+
+                                If no deadline is found, use the current date and time as the default deadline in ISO 8601 format.
+
+                                Input Text:
+                                "${taskInput}"`,
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    const geminiResponse = JSON.parse(
+      response.data.candidates[0].content.parts[0].text
+    );
+
+    const taskDescription =
+      geminiResponse.description || "No description provided";
+    const taskDeadline = geminiResponse.deadline || new Date().toISOString();
+
+    setParsedTask(taskDescription);
+    setParsedDeadline(taskDeadline);
+
+    // Add task to the server
+    await addTaskToServer({ taskDescription, taskDeadline });
+
+    // Update task list
+    setTasks((prevTasks) => [...prevTasks, { taskDescription, taskDeadline }]);
+    setTaskInput(""); // Clear input after processing
+  } catch (error) {
+    console.error("Error extracting task details:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+export {
+  determineSentimentScore,
+  parseHealthData,
+  getMoodAndScore,
+  extractTaskDetails,
+};
