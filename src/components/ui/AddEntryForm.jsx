@@ -227,7 +227,7 @@ console.log("The day entry is ",dayEntryData)
                         onClick={startRecording}
                         className={`px-4 py-2 rounded ${isRecording ? 'bg-red-500' : 'bg-green-500'} text-white`}
                     >
-                        {isRecording ? 'Recording...' : 'Start Recording'}
+                        {isRecording ? 'Stop Recording...' : 'Start Recording'}
                     </button>
                 </div>
 
