@@ -6,6 +6,7 @@ import { selectCurrentUid } from '../../redux/authSlice';
 import { toast } from 'react-toastify';
 import Loader2 from './Loading2';
 import { getMoodAndScore } from '../../utlis/HealthHelper';
+
 const AddEntryForm = () => {
     const [entryContent, setEntryContent] = useState('');
     const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ const AddEntryForm = () => {
     const [selectedGoal, setSelectedGoal] = useState(null);
     const [dayEntryContent,setDayEntryContent] = useState()
     const userId = useSelector(selectCurrentUid);
-
+    const [isRecording, setIsRecording] = useState(false);
     useEffect(() => {
         getGoals();
     }, [userId]);
@@ -146,6 +147,34 @@ console.log("The day entry is ",dayEntryData)
         }
     };
 
+    const startRecording = () => {
+        if (!('webkitSpeechRecognition' in window)) {
+            toast.error('Your browser does not support speech recognition.');
+            return;
+        }
+
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.start();
+        setIsRecording(true);
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setEntryContent((prevContent) => `${prevContent} ${transcript}`);
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            toast.error('Error with speech recognition. Please try again.');
+        };
+
+        recognition.onend = () => {
+            setIsRecording(false);
+        };
+    };
 
 
     return (
@@ -157,7 +186,7 @@ console.log("The day entry is ",dayEntryData)
                 <div className="mb-4">
                     <label className="block font-semibold mb-2">Select a Goal</label>
                     <select
-                        onChange={(e) => handleSelectGoal(goals.find(g => g._id === e.target.value))}
+                        onChange={(e) => handleSelectGoal(goals.find((g) => g._id === e.target.value))}
                         value={selectedGoal ? selectedGoal._id : ''}
                         className="w-full p-2 border rounded"
                     >
@@ -170,18 +199,19 @@ console.log("The day entry is ",dayEntryData)
                     </select>
                 </div>
 
-                {showQuestions && goalQuestions.map((question, index) => (
-                    <div key={index} className="mb-4">
-                        <label className="block font-semibold mb-2">{question}</label>
-                        <input
-                            type="text"
-                            value={questionAnswers[index] || ''}
-                            onChange={(e) => handleAnswerChange(index, e.target.value)}
-                            placeholder="Answer here..."
-                            className="w-full p-2 border rounded"
-                        />
-                    </div>
-                ))}
+                {showQuestions &&
+                    goalQuestions.map((question, index) => (
+                        <div key={index} className="mb-4">
+                            <label className="block font-semibold mb-2">{question}</label>
+                            <input
+                                type="text"
+                                value={questionAnswers[index] || ''}
+                                onChange={(e) => handleAnswerChange(index, e.target.value)}
+                                placeholder="Answer here..."
+                                className="w-full p-2 border rounded"
+                            />
+                        </div>
+                    ))}
 
                 <textarea
                     value={entryContent}
@@ -190,6 +220,16 @@ console.log("The day entry is ",dayEntryData)
                     className="w-full h-32 p-2 border rounded mt-4"
                     required
                 />
+
+                <div className="mt-4">
+                    <button
+                        type="button"
+                        onClick={startRecording}
+                        className={`px-4 py-2 rounded ${isRecording ? 'bg-red-500' : 'bg-green-500'} text-white`}
+                    >
+                        {isRecording ? 'Recording...' : 'Start Recording'}
+                    </button>
+                </div>
 
                 <button type="submit" className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                     Add Entry
