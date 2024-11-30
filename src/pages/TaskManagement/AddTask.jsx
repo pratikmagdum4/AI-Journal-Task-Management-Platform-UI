@@ -19,6 +19,18 @@ const TaskInputForm = () => {
         console.log("The tasks stored in effect ", tasks)
 
     }, []);
+    const formatDeadline = (isoString) => {
+        const dateObj = new Date(isoString);
+        return {
+            date: dateObj.toISOString().split("T")[0], // Extracts date in YYYY-MM-DD format
+            time: dateObj.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+                timeZone: "UTC", // Use UTC explicitly
+            }),
+        };
+    };
 
     const extractTaskDetails = async (e) => {
         e.preventDefault();
@@ -83,9 +95,9 @@ const TaskInputForm = () => {
 
             const taskDescription = geminiResponse.description || "No description provided";
             const taskDeadline = geminiResponse.dateTime || new Date().toISOString();
-
+            const deadline = formatDeadline(taskDeadline)
             setParsedTask(taskDescription);
-            setParsedDeadline(taskDeadline);
+            setParsedDeadline(deadline);
 
             // Add task to the server
             await addTaskToServer({ taskDescription, taskDeadline });
@@ -178,7 +190,7 @@ const TaskInputForm = () => {
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                         disabled={isLoading}
                     >
-                        {isLoading ? "Processing..." : "Extract Task Details"}
+                        {isLoading ? "Processing..." : "Add Task Details"}
                     </button>
                 </form>
 
@@ -186,7 +198,7 @@ const TaskInputForm = () => {
                     <div className="mt-6 p-4 bg-gray-100 rounded-lg">
                         <h3 className="text-lg font-semibold">Task Details:</h3>
                         <p><strong>Task:</strong> {parsedTask}</p>
-                        <p><strong>Deadline:</strong> {parsedDeadline}</p>
+                        <p><strong>Deadline:</strong> {formatDeadline(parsedDeadline)}</p>
                     </div>
                 )}
 
@@ -199,7 +211,11 @@ const TaskInputForm = () => {
                                     <p><strong>Original Task:</strong> {task.originalTask}</p>
                                     <p><strong>Task:</strong> {task.extractedDescription}</p>
                                     {task.extractedTime && (
-                                        <p><strong>Deadline:</strong> {task.extractedTime}</p>
+                                        <>  
+                                        <p><strong>Deadline:</strong> </p>
+                                        <p><strong>Date:</strong> {formatDeadline(task.extractedTime).date}</p>
+                                        <p><strong>Time:</strong> {formatDeadline(task.extractedTime).time}</p>
+                                        </>
                                     )}
                                 </li>
                             ))

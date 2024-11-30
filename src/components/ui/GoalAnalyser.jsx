@@ -4,7 +4,7 @@ import { BASE_URL } from '../../api';
 import { useSelector } from 'react-redux';
 import { selectCurrentUid } from '../../redux/authSlice';
 
-const GoalAnalyzer = () => {
+const GoalAnalyzer = ({ newGoalAdded }) => {
     const [goals, setGoals] = useState([]);
     const [selectedGoal, setSelectedGoal] = useState('');
     const [entries, setEntries] = useState([]);
@@ -101,7 +101,7 @@ const GoalAnalyzer = () => {
 
         fetchEntries();
         fetchGoals();
-    }, [userId]);
+    }, [userId, newGoalAdded]);
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-md">

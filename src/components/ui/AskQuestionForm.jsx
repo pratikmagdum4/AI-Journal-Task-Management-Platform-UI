@@ -17,10 +17,8 @@ const AskQuestionForm = () => {
         }).join("\n\n");
     };
 
-    // Function to generate answer
     async function generateAnswer(e) {
         e.preventDefault();
-        // console.log("The entries are here: ", entries);
         setGeneratingAnswer(true); // Set loading state
         const formattedEntries = formatEntriesForAPI();
 
@@ -34,7 +32,17 @@ const AskQuestionForm = () => {
                         {
                             parts: [
                                 {
-                                    text: `Following is my question, give me an answer based on the following entries :\n\n${question}\n\n${formattedEntries}`
+                                    text: `Here is my question and relevant journal entries. Please answer based on these entries. Format the response as a JSON object with categories as keys and arrays of points as values, give  description answer for all points STRICTLY ,also change category title according to question asked here are sample categories :
+                                {
+                                    "Challenges_Encountered": [...],
+                                    "Strategies_for_Overcoming_Challenges": [...],
+                                    "Action_Planning": [...],
+                                    "Additional_Tips": [...]
+                                }
+                                Question: ${question}
+
+                                Journal Entries:
+                                ${formattedEntries}`
                                 }
                             ]
                         }
@@ -42,8 +50,29 @@ const AskQuestionForm = () => {
                 }
             });
 
-            // Corrected response structure
-            setAnswer(response.data.candidates[0].content.parts[0].text);
+            // Directly use the response if it's already a valid object
+            const responseContent = response.data.candidates[0].content.parts[0].text;
+
+            // Ensure the response is in an object format before processing
+            let parsedResponse;
+            try {
+                parsedResponse = typeof responseContent === "string" ? JSON.parse(responseContent) : responseContent;
+            } catch (parseError) {
+                throw new Error("Failed to parse response as JSON");
+            }
+
+            const formattedAnswer = Object.entries(parsedResponse).map(([category, points]) => (
+                <div key={category}>
+                    <h4 className="font-bold">{category.replace(/_/g, " ")}</h4>
+                    <ul className="list-disc ml-5">
+                        {points.map((point, index) => (
+                            <li key={index}>{point}</li>
+                        ))}
+                    </ul>
+                </div>
+            ));
+
+            setAnswer(formattedAnswer);
         } catch (error) {
             console.error("Error:", error);
             setAnswer("Sorry - Something went wrong. Please try again!");

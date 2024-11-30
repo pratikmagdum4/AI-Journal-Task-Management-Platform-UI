@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import Loader2 from './Loading2';
 import { getMoodAndScore } from '../../utlis/HealthHelper';
 
-const AddEntryForm = ({ onNewEntryAdded }) => {
+const AddEntryForm = ({ onNewEntryAdded, newGoalAdded }) => {
     const [entryContent, setEntryContent] = useState('');
     const [loading, setLoading] = useState(false);
     const [showQuestions, setShowQuestions] = useState(false);
@@ -20,7 +20,7 @@ const AddEntryForm = ({ onNewEntryAdded }) => {
     const [isRecording, setIsRecording] = useState(false);
     useEffect(() => {
         getGoals();
-    }, [userId]);
+    }, [userId, newGoalAdded]);
 
     const getGoals = async () => {
         try {

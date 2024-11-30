@@ -5,7 +5,7 @@ import { selectCurrentUid } from '../../redux/authSlice';
 import { BASE_URL } from '../../api';
 import { toast } from 'react-toastify';
 
-const GoalEntryForm = () => {
+const GoalEntryForm = ({ ONnewGoalAdded }) => {
     const [goalDescription, setGoalDescription] = useState('');
     const [goalCategory, setGoalCategory] = useState('');
     const [goals, setGoals] = useState([]);
@@ -33,6 +33,7 @@ const GoalEntryForm = () => {
         try {
             const response = await axios.post(`${BASE_URL}/user/goals/add/${id}`, newGoal);
             setGoals((prevGoals) => [...prevGoals, response.data.goal]);
+            ONnewGoalAdded()
             setGoalDescription('');
             setGoalCategory('');
             setGoalQuestions([]);
