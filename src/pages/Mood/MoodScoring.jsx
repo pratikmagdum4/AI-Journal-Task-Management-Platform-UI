@@ -80,7 +80,7 @@ const MoodCalendar = () => {
                 {loading ? (
                     <p className="text-gray-500 text-center">Loading mood data...</p>
                 ) : (
-                    <div className="grid grid-cols-7 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+                    <div className="grid grid-cols-4 gap-4 sm:grid-cols-4 lg:grid-cols-7">
                         {daysInMonth.map((date) => {
                             const dateKey = format(date, "yyyy-MM-dd");
                             const dateKeyNumber = Number(dateKey.replace(/-/g, ""));
