@@ -8,7 +8,7 @@ import Navbar from "../Navbar/Navbar";
 import { BASE_URL } from "../../api";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentUid } from "../../redux/authSlice";
 import Loading from '../../components/ui/Loading';

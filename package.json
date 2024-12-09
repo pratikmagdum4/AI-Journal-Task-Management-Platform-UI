@@ -21,6 +21,7 @@
     "emailjs-com": "^3.2.0",
     "framer-motion": "^11.11.9",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.468.0",
     "ollama": "^0.5.9",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",

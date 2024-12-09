@@ -45,6 +45,7 @@ function Navbar() {
                         <Link to="/login/u">Dashboard</Link> {/* Replaced with Link */}
                         <Link to="/login/t">Tasks</Link> {/* Replaced with Link */}
                             <Link to="/login/u/m">Mood </Link> 
+                            <Link to="/login/u/feed">Feedback </Link> 
                         {/* <button className="logout-btn" onClick={handleLogout}>
                             Logout
                         </button> */}

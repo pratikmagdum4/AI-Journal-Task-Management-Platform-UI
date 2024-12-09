@@ -33,7 +33,7 @@ function App() {
           <Route path="/c" element={<ContactPage />} />
           <Route path="/l" element={<Loader2 />} />
           <Route path="/a" element={<AboutUs />} />
-          <Route path="/feed" element={<FeedbackPage />} />
+          <Route path="login/u/feed" element={<FeedbackPage />} />
           <Route
             path="/login/u"
             element={

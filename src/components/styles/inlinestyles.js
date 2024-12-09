@@ -5,6 +5,7 @@ export const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
+    // marginTop:"90px",
     background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
     fontFamily: "'Arial', sans-serif",
   },
@@ -16,6 +17,7 @@ export const styles = {
     width: "100%",
     maxWidth: "400px",
     textAlign: "center",
+    marginTop:"60px"
   },
   title: {
     marginBottom: "1.5rem",
