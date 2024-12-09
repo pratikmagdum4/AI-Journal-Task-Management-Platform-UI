@@ -29,8 +29,14 @@ function Navbar() {
 
   // Handle logout
   const handleLogout = () => {
+    const confirmed = confirm("Did you want to logout?")
+    if(confirmed)
+    {
     dispatch(logOut());
     navigate('/login');
+    }else{
+        return;
+    }
   };
 
   // Menu variants for animation

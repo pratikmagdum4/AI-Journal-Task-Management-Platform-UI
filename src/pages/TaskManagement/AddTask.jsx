@@ -3,9 +3,18 @@ import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
 import { BASE_URL } from '../../api';
 import { useSelector } from 'react-redux';
-import { selectCurrentEmail, selectCurrentUid } from '../../redux/authSlice';
+import { isAuthenticated, selectCurrentEmail, selectCurrentUid } from '../../redux/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const TaskInputForm = () => {
+    const navigate = useNavigate();
+    const authenticated = useSelector(isAuthenticated);
+    useEffect(()=>{
+        if(!authenticated)
+        {
+            navigate('/login');
+        }
+    },[authenticated])
     const [taskInput, setTaskInput] = useState('');
     const [parsedTask, setParsedTask] = useState('');
     const [parsedDeadline, setParsedDeadline] = useState('');
@@ -20,17 +29,24 @@ const TaskInputForm = () => {
 
     }, []);
     const formatDeadline = (isoString) => {
+        console.log("Received ISO string:", isoString);
         const dateObj = new Date(isoString);
+                if (isNaN(dateObj.getTime())) {
+            console.error("Invalid date:", isoString);
+            return { date: "", time: "" }; // Handle invalid date
+        }
+        console.log("The date is ",dateObj.toISOString().split("T")[0])
         return {
-            date: dateObj.toISOString().split("T")[0], // Extracts date in YYYY-MM-DD format
+            date: dateObj.toISOString().split("T")[0],
             time: dateObj.toLocaleTimeString("en-US", {
                 hour: "2-digit",
                 minute: "2-digit",
                 hour12: true,
-                timeZone: "UTC", // Use UTC explicitly
+                timeZone: "UTC",
             }),
         };
     };
+    
 
     const extractTaskDetails = async (e) => {
         e.preventDefault();
@@ -50,7 +66,7 @@ const TaskInputForm = () => {
                                     "description": "<task description>",
                                     "dateTime": "<ISO 8601 formatted date and time>"
                                 }
-
+,
                                 If no explicit date or time is found, set the "dateTime" field to the current date and time in ISO 8601 format.
 
                                 Examples of input and expected JSON output:
@@ -58,29 +74,29 @@ const TaskInputForm = () => {
                                    Output: {
                                        "description": "Jogging",
                                        "dateTime": "2024-11-30T17:00:00Z"
-                                   }
+                                   },
 
                                 2. Input: "Finish the project by 3rd December"
                                    Output: {
                                        "description": "Finish the project",
                                        "dateTime": "2024-12-03T00:00:00Z"
                                    }
-
+,
                                 3. Input: "Team meeting on Monday at 10 am"
                                    Output: {
                                        "description": "Team meeting",
-                                       "dateTime": "2024-12-02T10:00:00Z" // Assuming the input was on a Friday.
-
+                                       "dateTime": "2024-12-02T10:00:00Z" 
+                                },
                                 4. Input: "I want to read Mahabharat book at 11:10 am today"
                                 Output: {
                                     "description": "Read Mahabharat book",
                                     "dateTime": "2024-11-29T11:10:00Z" // Assuming today is 29th November 2024
-                                }
+                                },
                                 5. Input: "Jogging tomorrow at 5 pm"
                                 Output: {
                                     "description": "Jogging",
                                     "dateTime": "2024-11-30T17:00:00Z" // Assuming today is 29th November 2024
-                                }
+                                },
 
                                 Input Task:
                                 "${taskInput}"`,
@@ -160,7 +176,7 @@ const TaskInputForm = () => {
     return (
         <>
             <Navbar />
-            <div className="p-6 bg-white rounded-lg shadow-md">
+            <div className="p-6 mt-16 bg-white rounded-lg shadow-md">
                 <h2 className="text-xl font-bold mb-4">Add a Task with Natural Language</h2>
                 <form onSubmit={extractTaskDetails}>
                     <textarea
@@ -205,16 +221,17 @@ const TaskInputForm = () => {
                 <div className="mt-6">
                     <h3 className="text-lg font-semibold">Task List:</h3>
                     <ul className="mt-4">
-                        {tasks && tasks.length > 0 ? (
+                        {tasks && tasks.length > 0 ? (  
                             tasks.map((task, index) => (
                                 <li key={index} className="p-4 mb-2 bg-gray-100 rounded-lg">
                                     <p><strong>Original Task:</strong> {task.originalTask}</p>
                                     <p><strong>Task:</strong> {task.extractedDescription}</p>
-                                    {task.extractedTime && (
+                                    {task.dateTime && (
                                         <>  
-                                        <p><strong>Deadline:</strong> </p>
-                                        <p><strong>Date:</strong> {formatDeadline(task.extractedTime).date}</p>
-                                        <p><strong>Time:</strong> {formatDeadline(task.extractedTime).time}</p>
+                                        <p><strong>Deadline:</strong> {task.dateTime ? formatDeadline(task.dateTime).time : 'No time specified'}</p>
+<p><strong>Date:</strong> {task.dateTime ? formatDeadline(task.dateTime).date : 'No date specified'}</p>
+
+                                        {/* <p><strong>Time:</strong> {formatDeadline(task.extractedTime).time}</p> */}
                                         </>
                                     )}
                                 </li>

@@ -1,13 +1,26 @@
 // StudentDashboard.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import JournalEntriesByDate from '../../components/ui/JournalEntries';
 import AddEntryForm from '../../components/ui/AddEntryForm';
 import AskQuestionForm from '../../components/ui/AskQuestionForm';
 import Navbar from '../Navbar/Navbar';
 import GoalEntryForm from '../../components/ui/GoalEntryForm'; // Import the new Goal Entry component
 import GoalAnalyzer from '../../components/ui/GoalAnalyser';
-import HealthInsight from './HealthInsight';
+// import HealthInsight from './HealthInsight';
+import { useNavigate } from 'react-router-dom';
+import { isAuthenticated } from '../../redux/authSlice';
+import { useSelector } from 'react-redux';
 const StudentDashboard = () => {
+
+    const navigate = useNavigate();
+    const authenticated = useSelector(isAuthenticated);
+    useEffect(()=>{
+        if(!authenticated)
+        {
+            navigate('/login');
+        }
+    },[authenticated])
+
     const [newEntryAdded, setNewEntryAdded] = useState(false);
     const [newGoalAdded, setGoalEntryAdded] = useState(false);
 

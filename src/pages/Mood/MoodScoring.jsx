@@ -2,11 +2,22 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { useSelector } from "react-redux";
-import { selectCurrentUid } from "../../redux/authSlice";
+import { isAuthenticated, selectCurrentUid } from "../../redux/authSlice";
 import { BASE_URL } from "../../api";
 import Navbar from "../Navbar/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const MoodCalendar = () => {
+
+    const navigate = useNavigate();
+    const authenticated = useSelector(isAuthenticated);
+    useEffect(()=>{
+        if(!authenticated)
+        {
+            navigate('/login');
+        }
+    },[authenticated])
+
     const [moods, setMoods] = useState({});
     const [loading, setLoading] = useState(true);
     const id = useSelector(selectCurrentUid);
@@ -48,7 +59,7 @@ const MoodCalendar = () => {
     return (
         <>
             <Navbar />
-            <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-4xl mx-auto">
+            <div className="bg-white mt-14 p-6 shadow-lg rounded-lg w-full max-w-4xl mx-auto">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Mood Calendar</h2>
                 <div className="flex justify-center space-x-4 mb-4">
                     <select
