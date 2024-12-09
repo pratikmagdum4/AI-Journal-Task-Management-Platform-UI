@@ -9,12 +9,11 @@ import { useNavigate } from 'react-router-dom';
 const TaskInputForm = () => {
     const navigate = useNavigate();
     const authenticated = useSelector(isAuthenticated);
-    useEffect(()=>{
-        if(!authenticated)
-        {
+    useEffect(() => {
+        if (!authenticated) {
             navigate('/login');
         }
-    },[authenticated])
+    }, [authenticated])
     const [taskInput, setTaskInput] = useState('');
     const [parsedTask, setParsedTask] = useState('');
     const [parsedDeadline, setParsedDeadline] = useState('');
@@ -31,11 +30,11 @@ const TaskInputForm = () => {
     const formatDeadline = (isoString) => {
         console.log("Received ISO string:", isoString);
         const dateObj = new Date(isoString);
-                if (isNaN(dateObj.getTime())) {
+        if (isNaN(dateObj.getTime())) {
             console.error("Invalid date:", isoString);
             return { date: "", time: "" }; // Handle invalid date
         }
-        console.log("The date is ",dateObj.toISOString().split("T")[0])
+        console.log("The date is ", dateObj.toISOString().split("T")[0])
         return {
             date: dateObj.toISOString().split("T")[0],
             time: dateObj.toLocaleTimeString("en-US", {
@@ -46,7 +45,7 @@ const TaskInputForm = () => {
             }),
         };
     };
-    
+
 
     const extractTaskDetails = async (e) => {
         e.preventDefault();
@@ -106,7 +105,7 @@ const TaskInputForm = () => {
                     ],
                 },
             });
-            console.log("The response is",response);
+            console.log("The response is", response);
             const geminiResponse = JSON.parse(response.data.candidates[0].content.parts[0].text);
 
             const taskDescription = geminiResponse.description || "No description provided";
@@ -150,7 +149,7 @@ const TaskInputForm = () => {
 
     const addTaskToServer = async (taskData) => {
         try {
-            
+
             const reminderTime = new Date(
                 new Date(taskData.taskDeadline).getTime() - notificationTime * 60000 // notificationTime is in minutes
             ).toISOString();
@@ -165,8 +164,8 @@ const TaskInputForm = () => {
                 email
             };
             console.log("The task i s", newTaskData)
-         const response =    await axios.post(`${BASE_URL}/api/tasks/add`, newTaskData);
-         console.log("The response ",response)
+            const response = await axios.post(`${BASE_URL}/api/tasks/add`, newTaskData);
+            console.log("The response ", response)
         } catch (error) {
             console.error("Error adding task to server:", error);
         }
@@ -214,24 +213,26 @@ const TaskInputForm = () => {
                     <div className="mt-6 p-4 bg-gray-100 rounded-lg">
                         <h3 className="text-lg font-semibold">Task Details:</h3>
                         <p><strong>Task:</strong> {parsedTask}</p>
-                        <p><strong>Deadline:</strong> {formatDeadline(parsedDeadline)}</p>
+
+                        {/* Check if parsedDeadline exists and render its values properly */}
+                        <p><strong>Deadline:</strong> {parsedDeadline ? `${parsedDeadline.date} ${parsedDeadline.time}` : 'No deadline provided'}</p>
                     </div>
                 )}
 
                 <div className="mt-6">
                     <h3 className="text-lg font-semibold">Task List:</h3>
                     <ul className="mt-4">
-                        {tasks && tasks.length > 0 ? (  
+                        {tasks && tasks.length > 0 ? (
                             tasks.map((task, index) => (
                                 <li key={index} className="p-4 mb-2 bg-gray-100 rounded-lg">
                                     <p><strong>Original Task:</strong> {task.originalTask}</p>
                                     <p><strong>Task:</strong> {task.extractedDescription}</p>
                                     {task.dateTime && (
-                                        <>  
-                                        <p><strong>Deadline:</strong> {task.dateTime ? formatDeadline(task.dateTime).time : 'No time specified'}</p>
-<p><strong>Date:</strong> {task.dateTime ? formatDeadline(task.dateTime).date : 'No date specified'}</p>
+                                        <>
+                                            <p><strong>Deadline:</strong> {task.dateTime ? formatDeadline(task.dateTime).time : 'No time specified'}</p>
+                                            <p><strong>Date:</strong> {task.dateTime ? formatDeadline(task.dateTime).date : 'No date specified'}</p>
 
-                                        {/* <p><strong>Time:</strong> {formatDeadline(task.extractedTime).time}</p> */}
+                                            {/* <p><strong>Time:</strong> {formatDeadline(task.extractedTime).time}</p> */}
                                         </>
                                     )}
                                 </li>

@@ -208,7 +208,7 @@ function MobileNavLink({ to, icon, label }) {
   return (
     <Link 
       to={to} 
-      className="flex items-center text-xl text-blue-600 hover:text-blue-800 
+      className="mt-80  flex items-center text-xl text-blue-600 hover:text-blue-800 
       transition duration-300 transform hover:scale-110"
     >
       {icon}
