@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
+import { Mail, Phone, User, Send, CheckCircle2 } from 'lucide-react';
 import Navbar from '../Navbar/Navbar';
-// import f
-// import { HomeLink } from "../../components/variables/variables";
 
 const ContactPage = () => {
     const [formData, setFormData] = useState({
@@ -13,6 +12,7 @@ const ContactPage = () => {
     });
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,107 +21,149 @@ const ContactPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setError(''); // Clear previous error
+        setError('');
+        setIsLoading(true);
 
         // EmailJS service details
         const serviceID = import.meta.env.VITE_EMAIL_SERVICE_ID;
         const templateID = import.meta.env.VITE_EMAIL_TEMPLATE_ID;
         const userID = import.meta.env.VITE_EMAIL_USER_ID;
-        console.log("THe formdata is ", formData)
-        // Send email via EmailJS
+
         emailjs.send(serviceID, templateID, formData, userID)
             .then((response) => {
-                console.log("response ", response)
-                console.log('SUCCESS!', response.status, response.text);
-                setSubmitted(true); // Show success message
+                setSubmitted(true);
+                setIsLoading(false);
             })
             .catch((err) => {
                 console.error('FAILED...', err);
                 setError('Failed to send message. Please try again.');
+                setIsLoading(false);
             });
     };
 
     return (
         <>
-            <Navbar  />
-            <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-10 mt-10">
-                <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
-                    <h1 className="text-4xl font-bold text-indigo-600 mb-6 text-center">Contact Us</h1>
+         <Navbar/>
+        <div className="min-h-screen bg-gradient-to-br mt-12 from-blue-50 to-blue-100 flex items-center justify-center px-4 py-12">
+            <div className="w-full max-w-5xl flex shadow-2xl rounded-2xl overflow-hidden">
+                {/* Contact Information Section */}
+                <div className="w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-12 flex flex-col justify-between">
+                    <div>
+                        <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
+                        <p className="text-blue-100 mb-8">
+                            We'd love to hear from you. Fill out the form and we'll get back to you as soon as possible.
+                        </p>
+                    </div>
 
+                    <div className="space-y-6">
+                        <div className="flex items-center space-x-4">
+                            <Mail className="h-6 w-6 text-blue-200" />
+                            <span>support@company.com</span>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <Phone className="h-6 w-6 text-blue-200" />
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Contact Form Section */}
+                <div className="w-1/2 bg-white p-12 flex flex-col justify-center">
                     {submitted ? (
                         <div className="text-center">
-                            <h2 className="text-2xl font-semibold mb-4">Thank you for reaching out!</h2>
-                            <p className="text-gray-600">We will get back to you soon.</p>
+                            <CheckCircle2 className="h-24 w-24 text-green-500 mx-auto mb-6" />
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Thank You!</h2>
+                            <p className="text-gray-600">
+                                Your message has been received. We'll get back to you soon.
+                            </p>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            {error && <p className="text-red-500 text-center">{error}</p>}
-                            <div>
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                            {error && (
+                                <div className="bg-red-50 border border-red-300 text-red-600 px-4 py-3 rounded-lg text-center">
+                                    {error}
+                                </div>
+                            )}
+
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <User className="h-5 w-5 text-gray-400" />
+                                </div>
                                 <input
                                     type="text"
-                                    id="name"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                     placeholder="Your Name"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                                <input
-                                    type="text"
-                                    id="phone"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                    placeholder="Your Contact Number"
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 />
                             </div>
 
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Mail className="h-5 w-5 text-gray-400" />
+                                </div>
                                 <input
                                     type="email"
-                                    id="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                     placeholder="Your Email"
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Phone className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    placeholder="Phone Number"
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
                                 <textarea
-                                    id="message"
                                     name="message"
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                     placeholder="Your Message"
                                     rows="4"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 ></textarea>
                             </div>
 
                             <button
                                 type="submit"
-                                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300"
+                                disabled={isLoading}
+                                className="w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 disabled:opacity-50"
                             >
-                                Send Message
+                                {isLoading ? (
+                                    <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                ) : (
+                                    <>
+                                        <Send className="h-5 w-5 mr-2" />
+                                        Send Message
+                                    </>
+                                )}
                             </button>
                         </form>
                     )}
                 </div>
             </div>
-            {/* <Footer /> */}
+        </div>
         </>
     );
 };
